@@ -1,0 +1,28 @@
+{
+  "name": "filler",
+  "version": "0.1.0",
+  "scripts": {
+    "filler": "ts-node ./src/index.ts",
+    "build": "rm -rf ./build; tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pirobtumen/pirobits.com.git"
+  },
+  "author": "Alberto Sola",
+  "dependencies": {
+    "uglifycss": "0.0.29",
+    "yargs": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.1",
+    "@types/uglifycss": "0.0.5",
+    "@types/yargs": "^13.0.3",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  }
+}
