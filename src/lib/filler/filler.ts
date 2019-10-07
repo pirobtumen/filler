@@ -27,7 +27,7 @@ export class Filler {
     const config = this.store.get("config");
     const templates: { [key: string]: string } = {};
     const templateFolder = join(config.projectFolder, config.templateFolder);
-    const files = (await DirScanner.scan(templateFolder)).getFiles();
+    const files = await DirScanner.scanAndGetFiles(templateFolder);
 
     for (const file of files) {
       const name = file.name.split(".")[0];
@@ -75,17 +75,9 @@ export class Filler {
     writeFileSync(outFilePath, content);
   }
 
-  public async build() {
+  private generateRecentPosts(posts: Array<IFile>) {
+    const postsMetdata: Array<IPostMetadata> = [];
     const config = this.store.get("config");
-    const recentPosts: Array<IPostMetadata> = [];
-    await mkdir(config.distFolder, { recursive: true });
-
-    let filesUpdated = 0;
-    const posts = (await DirScanner.scan(
-      join(config.projectFolder, config.postsFolder)
-    ))
-      .getFiles()
-      .map(p => ({ ...p, path: config.postsFolder }));
 
     for (const post of posts) {
       const { metadata } = Builder.getFileMetadata(post.raw.toString());
@@ -101,19 +93,41 @@ export class Filler {
         createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
       };
 
-      recentPosts.push(postMetadata);
+      postsMetdata.push(postMetadata);
     }
 
-    this.store.set("recentPosts", recentPosts);
+    const recentPosts = postsMetdata
+      .sort((p1, p2) => {
+        const d1 = p1.createdAt;
+        const d2 = p2.createdAt;
 
+        if (d1 > d2) return -1;
+        else if (d1 === d2) return 0;
+        else return 1;
+      })
+      .slice(0, config.recentPosts);
+    this.store.set("recentPosts", recentPosts);
+  }
+
+  public async build() {
+    const config = this.store.get("config");
+    const postsFolder = join(config.projectFolder, config.postsFolder);
+    const publicFolder = join(config.projectFolder, config.publicFolder);
+    let filesUpdated = 0;
+
+    const posts = (await DirScanner.scanAndGetFiles(postsFolder)).map(p => ({
+      ...p,
+      path: config.postsFolder
+    }));
+
+    this.generateRecentPosts(posts);
+
+    await mkdir(config.distFolder, { recursive: true });
+    const distFiles = await DirScanner.scanAndGetFiles(config.distFolder);
     const publicFiles = [
-      ...(await DirScanner.scan(
-        join(config.projectFolder, config.publicFolder)
-      )).getFiles(),
+      ...(await DirScanner.scanAndGetFiles(publicFolder)),
       ...posts
     ];
-
-    const distFiles = (await DirScanner.scan(config.distFolder)).getFiles();
 
     for (const pf of publicFiles) {
       const distFileIndex = distFiles.findIndex(

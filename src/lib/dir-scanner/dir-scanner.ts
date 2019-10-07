@@ -5,25 +5,25 @@ import { IFile } from ".";
 import { exists } from "../command";
 
 export class DirScanner {
-  private rootFolder: string = "";
   private files: IFile[] = [];
 
-  public static async scan(folder: string) {
+  constructor(private rootFolder: string) {}
+
+  public static async scanAndGetFiles(folder: string) {
     if (!(await exists(folder))) {
       throw new Error(`DirScanner: folder ${folder} does not exist`);
     }
 
-    const dir = new this();
-    dir.rootFolder = folder;
-    await dir.exploreFolder();
-    return dir;
+    const dir = new this(folder);
+    await dir.scanFolder();
+    return dir.getFiles();
   }
 
   public getFiles() {
     return this.files;
   }
 
-  private async exploreFolder() {
+  public async scanFolder() {
     let foldersPath = [""];
 
     while (foldersPath.length > 0) {

@@ -7,6 +7,7 @@ export interface IConfig {
   projectFolder: string;
   postsFolder: string;
   mode: string;
+  recentPosts: number;
 }
 
 export interface IPostMetadata {

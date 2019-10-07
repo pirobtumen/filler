@@ -10,7 +10,8 @@ export async function main(config: Partial<IConfig>) {
     varsFolder: "vars",
     projectFolder: "",
     force: false,
-    mode: "dev"
+    mode: "dev",
+    recentPosts: 5
   };
 
   const store = new Store();
