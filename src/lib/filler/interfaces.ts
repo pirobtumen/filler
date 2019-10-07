@@ -1,5 +1,3 @@
-import { IFile } from "../dir-scanner";
-
 export interface IConfig {
   force: boolean;
   templateFolder: string;
@@ -9,16 +7,6 @@ export interface IConfig {
   projectFolder: string;
   postsFolder: string;
   mode: string;
-}
-export interface IFillerMetadata {
-  template?: string;
-  [key: string]: string | undefined;
-}
-
-export interface IFillerFile {
-  file: IFile;
-  metadata?: IFillerMetadata;
-  parsed?: string;
 }
 
 export interface IPostMetadata {

@@ -1,68 +1,63 @@
 import { writeFileSync, readFileSync } from "fs";
 import { join } from "path";
-import { processString as uglifyCssString } from "uglifycss";
 
 import { DirScanner, IFile } from "../dir-scanner";
 import { mkdir, unlink } from "../command";
 import { IConfig, IPostMetadata } from "./interfaces";
-import { getFileMetadata } from "./parser";
-
-type StringObject = { [key: string]: string };
+import { Builder } from "../builder";
+import { Store } from "../store";
 
 export class Filler {
-  private config: IConfig = {
-    templateFolder: "templates",
-    postsFolder: "posts",
-    publicFolder: "public",
-    distFolder: "./dist",
-    varsFolder: "vars",
-    projectFolder: "",
-    force: false,
-    mode: "dev"
-  };
-  private templates: StringObject = {};
-  private vars: {
-    [key: string]: { configMode: "prod" | "dev" | "all"; value: string };
-  } = {};
-  private recentPosts: IPostMetadata[] = [];
+  private store: Store;
+  private builder: Builder;
 
-  constructor(config: Partial<IConfig>) {
-    this.setConfig(config);
-    this.loadTemplates();
-    this.loadVars();
+  constructor(store: Store) {
+    this.store = store;
+    this.builder = new Builder(store);
   }
 
-  private setConfig(config: Partial<IConfig>) {
-    this.config = { ...this.config, ...config };
+  public async init() {
+    const templates = await this.loadTemplates();
+    const vars = this.loadVars();
+    this.store.set("templates", templates);
+    this.store.set("vars", vars);
   }
 
   private async loadTemplates() {
-    const templateFolder = join(
-      this.config.projectFolder,
-      this.config.templateFolder
-    );
-    const templates = (await DirScanner.scan(templateFolder)).getFiles();
+    const config = this.store.get("config");
+    const templates: { [key: string]: string } = {};
+    const templateFolder = join(config.projectFolder, config.templateFolder);
+    const files = (await DirScanner.scan(templateFolder)).getFiles();
 
-    for (const file of templates) {
+    for (const file of files) {
       const name = file.name.split(".")[0];
-      this.templates[name] = file.raw.toString();
+      templates[name] = file.raw.toString();
     }
+
+    return templates;
   }
 
   private loadVars() {
-    const varsFolder = join(this.config.projectFolder, this.config.varsFolder);
-    this.vars["analytics"] = {
+    const config = this.store.get("config");
+    const vars: {
+      [key: string]: { configMode: "prod" | "dev" | "all"; value: string };
+    } = {};
+    const varsFolder = join(config.projectFolder, config.varsFolder);
+    vars["analytics"] = {
       configMode: "prod",
       value: readFileSync(join(varsFolder, "analytics.html")).toString()
     };
-    this.vars["scripts"] = {
+    vars["scripts"] = {
       configMode: "all",
       value: readFileSync(join(varsFolder, "scripts.html")).toString()
     };
+
+    return vars;
   }
 
   private async saveFile(file: IFile) {
-    const outFolder = join(this.config.distFolder, file.path);
+    const config = this.store.get("config");
+    const outFolder = join(config.distFolder, file.path);
     try {
       await mkdir(outFolder, { recursive: true });
     } catch (e) {
@@ -80,59 +75,20 @@ export class Filler {
     writeFileSync(outFilePath, content);
   }
 
-  public async buildFile(file: IFile) {
-    switch (file.extension) {
-      case "html":
-        const { metadata, html: content } = getFileMetadata(
-          file.raw.toString()
-        );
-        let output = "";
-
-        if (metadata.template) {
-          output = this.templates[metadata.template];
-
-          output = output.replace("{{content}}", content);
-        } else {
-          output = content;
-        }
-
-        const vars = output.match(/{{var:(.*)}}/g);
-        if (vars) {
-          vars
-            .map(v => v.slice(6, -2))
-            .forEach((n, i) => {
-              const varValue =
-                this.config.mode === this.vars[n].configMode ||
-                this.vars[n].configMode === "all"
-                  ? this.vars[n].value
-                  : "";
-
-              output = output.replace(vars[i], varValue);
-            });
-        }
-
-        file.raw = output;
-        break;
-      case "css":
-        file.raw = uglifyCssString(file.raw.toString());
-        break;
-    }
-
-    return file;
-  }
-
   public async build() {
-    await mkdir(this.config.distFolder, { recursive: true });
+    const config = this.store.get("config");
+    const recentPosts: Array<IPostMetadata> = [];
+    await mkdir(config.distFolder, { recursive: true });
 
     let filesUpdated = 0;
     const posts = (await DirScanner.scan(
-      join(this.config.projectFolder, this.config.postsFolder)
+      join(config.projectFolder, config.postsFolder)
     ))
       .getFiles()
-      .map(p => ({ ...p, path: this.config.postsFolder }));
+      .map(p => ({ ...p, path: config.postsFolder }));
 
     for (const post of posts) {
-      const { metadata } = getFileMetadata(post.raw.toString());
+      const { metadata } = Builder.getFileMetadata(post.raw.toString());
       // TODO validation
       const [day, month, year] = metadata
         .date!.split("-")
@@ -144,18 +100,20 @@ export class Filler {
         author: metadata.author!,
         createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
       };
-      this.recentPosts.push(postMetadata);
+
+      recentPosts.push(postMetadata);
     }
+
+    this.store.set("recentPosts", recentPosts);
 
     const publicFiles = [
       ...(await DirScanner.scan(
-        join(this.config.projectFolder, this.config.publicFolder)
+        join(config.projectFolder, config.publicFolder)
       )).getFiles(),
       ...posts
     ];
-    const distFiles = (await DirScanner.scan(
-      this.config.distFolder
-    )).getFiles();
+
+    const distFiles = (await DirScanner.scan(config.distFolder)).getFiles();
 
     for (const pf of publicFiles) {
       const distFileIndex = distFiles.findIndex(
@@ -165,9 +123,9 @@ export class Filler {
       if (
         distFileIndex === -1 ||
         pf.modifiedAt > distFiles[distFileIndex].modifiedAt ||
-        this.config.force
+        config.force
       ) {
-        const file = await this.buildFile(pf);
+        const file = await this.builder.buildFile(pf);
         this.saveFile(file);
         filesUpdated += 1;
       }
@@ -178,7 +136,7 @@ export class Filler {
     }
 
     for (const f of distFiles) {
-      const filePath = join(this.config.distFolder, f.path, f.name);
+      const filePath = join(config.distFolder, f.path, f.name);
       await unlink(filePath);
       console.log(`- ${filePath}`);
       filesUpdated += 1;
