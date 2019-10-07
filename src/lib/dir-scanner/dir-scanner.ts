@@ -8,9 +8,9 @@ export class DirScanner {
   private rootFolder: string = "";
   private files: IFile[] = [];
 
-  public static async explore(folder: string) {
+  public static async scan(folder: string) {
     if (!(await exists(folder))) {
-      throw new Error("Folder does not exist");
+      throw new Error(`DirScanner: folder ${folder} does not exist`);
     }
 
     const dir = new this();

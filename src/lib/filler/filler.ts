@@ -1,26 +1,18 @@
-import { mkdirSync, writeFileSync, unlinkSync, readFileSync } from "fs";
+import { writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 import { processString as uglifyCssString } from "uglifycss";
 
-import { IConfig } from ".";
-import { version } from "../../../package.json";
 import { DirScanner, IFile } from "../dir-scanner";
+import { mkdir, unlink } from "../command";
+import { IConfig, IPostMetadata } from "./interfaces";
+import { getFileMetadata } from "./parser";
 
 type StringObject = { [key: string]: string };
-
-export interface IFillerMetadata {
-  template?: string | null;
-}
-
-export interface IFillerFile {
-  file: IFile;
-  metadata?: IFillerMetadata;
-  parsed?: string;
-}
 
 export class Filler {
   private config: IConfig = {
     templateFolder: "templates",
+    postsFolder: "posts",
     publicFolder: "public",
     distFolder: "./dist",
     varsFolder: "vars",
@@ -32,26 +24,24 @@ export class Filler {
   private vars: {
     [key: string]: { configMode: "prod" | "dev" | "all"; value: string };
   } = {};
+  private recentPosts: IPostMetadata[] = [];
 
-  constructor(config: IConfig) {
+  constructor(config: Partial<IConfig>) {
     this.setConfig(config);
     this.loadTemplates();
     this.loadVars();
   }
 
-  private setConfig(config: IConfig) {
-    const newConfig = { ...config };
-    newConfig.publicFolder =
-      newConfig.projectFolder + "/" + newConfig.publicFolder;
-    newConfig.varsFolder = newConfig.projectFolder + "/" + newConfig.varsFolder;
-    newConfig.templateFolder =
-      newConfig.projectFolder + "/" + newConfig.templateFolder;
-    this.config = newConfig;
+  private setConfig(config: Partial<IConfig>) {
+    this.config = { ...this.config, ...config };
   }
 
   private async loadTemplates() {
-    const dirScan = await DirScanner.explore(this.config.templateFolder);
-    const templates = dirScan.getFiles();
+    const templateFolder = join(
+      this.config.projectFolder,
+      this.config.templateFolder
+    );
+    const templates = (await DirScanner.scan(templateFolder)).getFiles();
 
     for (const file of templates) {
       const name = file.name.split(".")[0];
@@ -60,24 +50,21 @@ export class Filler {
   }
 
   private loadVars() {
+    const varsFolder = join(this.config.projectFolder, this.config.varsFolder);
     this.vars["analytics"] = {
       configMode: "prod",
-      value: readFileSync(
-        join(this.config.varsFolder, "analytics.html")
-      ).toString()
+      value: readFileSync(join(varsFolder, "analytics.html")).toString()
     };
     this.vars["scripts"] = {
       configMode: "all",
-      value: readFileSync(
-        join(this.config.varsFolder, "scripts.html")
-      ).toString()
+      value: readFileSync(join(varsFolder, "scripts.html")).toString()
     };
   }
 
-  private saveFile(file: IFile) {
+  private async saveFile(file: IFile) {
     const outFolder = join(this.config.distFolder, file.path);
     try {
-      mkdirSync(outFolder, { recursive: true });
+      await mkdir(outFolder, { recursive: true });
     } catch (e) {
       console.log(e);
     }
@@ -93,40 +80,10 @@ export class Filler {
     writeFileSync(outFilePath, content);
   }
 
-  private parseTemplateFile(fileRaw: string) {
-    const startsWithComment = fileRaw.startsWith("<!--");
-    const index = fileRaw.indexOf("-->");
-    const metadata: IFillerMetadata = {};
-    let html: string;
-
-    if (startsWithComment && index > -1) {
-      const endPos = index + 3;
-      const metdataRaw = fileRaw.substr(0, endPos);
-      const template = metdataRaw.match(/@template (.+)/);
-      if (template && template[1] !== "none") {
-        metadata.template = template[1];
-      } else {
-        metadata.template = null;
-      }
-
-      html = fileRaw.substr(endPos);
-    } else {
-      html = fileRaw;
-    }
-
-    if (metadata.template === undefined) {
-      console.log(
-        "WARNING: @template not defined. Use @template none instead."
-      );
-    }
-
-    return { metadata, html };
-  }
-
   public async buildFile(file: IFile) {
     switch (file.extension) {
       case "html":
-        const { metadata, html: content } = this.parseTemplateFile(
+        const { metadata, html: content } = getFileMetadata(
           file.raw.toString()
         );
         let output = "";
@@ -135,7 +92,6 @@ export class Filler {
           output = this.templates[metadata.template];
 
           output = output.replace("{{content}}", content);
-          output = output.replace("{{version}}", version);
         } else {
           output = content;
         }
@@ -166,13 +122,40 @@ export class Filler {
   }
 
   public async build() {
-    let filesUpdated = 0;
-    const publicDir = await DirScanner.explore(this.config.publicFolder);
-    const publicFiles = publicDir.getFiles();
+    await mkdir(this.config.distFolder, { recursive: true });
 
-    mkdirSync(this.config.distFolder, { recursive: true });
-    const distDir = await DirScanner.explore(this.config.distFolder);
-    const distFiles = distDir.getFiles();
+    let filesUpdated = 0;
+    const posts = (await DirScanner.scan(
+      join(this.config.projectFolder, this.config.postsFolder)
+    ))
+      .getFiles()
+      .map(p => ({ ...p, path: this.config.postsFolder }));
+
+    for (const post of posts) {
+      const { metadata } = getFileMetadata(post.raw.toString());
+      // TODO validation
+      const [day, month, year] = metadata
+        .date!.split("-")
+        .map(d => parseInt(d));
+
+      const postMetadata: IPostMetadata = {
+        title: metadata.title!,
+        description: metadata.description!,
+        author: metadata.author!,
+        createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
+      };
+      this.recentPosts.push(postMetadata);
+    }
+
+    const publicFiles = [
+      ...(await DirScanner.scan(
+        join(this.config.projectFolder, this.config.publicFolder)
+      )).getFiles(),
+      ...posts
+    ];
+    const distFiles = (await DirScanner.scan(
+      this.config.distFolder
+    )).getFiles();
 
     for (const pf of publicFiles) {
       const distFileIndex = distFiles.findIndex(
@@ -196,7 +179,7 @@ export class Filler {
 
     for (const f of distFiles) {
       const filePath = join(this.config.distFolder, f.path, f.name);
-      unlinkSync(filePath);
+      await unlink(filePath);
       console.log(`- ${filePath}`);
       filesUpdated += 1;
     }

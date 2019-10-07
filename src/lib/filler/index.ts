@@ -1,2 +1,2 @@
-export * from "./config.interface";
+export * from "./interfaces";
 export * from "./filler";

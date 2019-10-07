@@ -19,11 +19,7 @@ const argv = yargs
   })
   .parse();
 
-const config: IConfig = {
-  templateFolder: "templates",
-  publicFolder: "public",
-  distFolder: "./dist",
-  varsFolder: "vars",
+const config: Partial<IConfig> = {
   projectFolder: argv.f,
   force: argv.force,
   mode: "dev"
