@@ -1,4 +1,6 @@
-export class Store {
+import { IStore } from "../interfaces";
+
+export class Store implements IStore {
   private data: { [key: string]: any } = {};
 
   public set(key: string, value: any) {

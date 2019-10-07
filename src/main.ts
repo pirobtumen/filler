@@ -1,5 +1,6 @@
-import { Filler, IConfig } from "./lib/filler";
+import { IConfig } from "./lib/interfaces";
 import { Store } from "./lib/store";
+import { Filler } from "./lib/filler";
 
 export async function main(config: Partial<IConfig>) {
   const defaultConfig: IConfig = {

@@ -1,10 +1,10 @@
 import { writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 
-import { DirScanner, IFile } from "../dir-scanner";
-import { mkdir, unlink } from "../command";
-import { IConfig, IPostMetadata } from "./interfaces";
-import { Builder } from "../builder";
+import { DirScanner } from "../dir-scanner";
+import { mkdir, unlink } from "../io";
+import { IPostMetadata, IFile } from "../interfaces";
+import { Builder, getFileMetadata } from "../builder";
 import { Store } from "../store";
 
 export class Filler {
@@ -80,7 +80,7 @@ export class Filler {
     const config = this.store.get("config");
 
     for (const post of posts) {
-      const { metadata } = Builder.getFileMetadata(post.raw.toString());
+      const { metadata } = getFileMetadata(post.raw.toString());
       // TODO validation
       const [day, month, year] = metadata
         .date!.split("-")

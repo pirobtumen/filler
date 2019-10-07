@@ -1,9 +1,9 @@
-import { Builder } from "../../src/lib/builder";
+import { getFileMetadata } from "../../src/lib/builder";
 
 describe("Builder", () => {
   test("Get template metadata (single line)", () => {
     const file = "<!-- @template main @a 1234 @b abcdef @c 12-12-2019 -->";
-    const { metadata } = Builder.getFileMetadata(file);
+    const { metadata } = getFileMetadata(file);
     expect(metadata).toMatchObject({
       template: "main",
       a: "1234",
@@ -20,7 +20,7 @@ describe("Builder", () => {
     @b abcdef\n\
     @c 12-12-2019\n\
     -->";
-    const { metadata } = Builder.getFileMetadata(file);
+    const { metadata } = getFileMetadata(file);
     expect(metadata).toMatchObject({
       template: "main",
       a: "1234",
@@ -37,7 +37,7 @@ describe("Builder", () => {
     @b abcdef\n\
     @c 12-12-2019\n\
     -->";
-    const { metadata } = Builder.getFileMetadata(file);
+    const { metadata } = getFileMetadata(file);
     expect(metadata).toMatchObject({
       template: "main",
       a: "1234",
@@ -54,7 +54,7 @@ describe("Builder", () => {
     @b abcdef\n\
     @c 12-12-2019\n\
     -->";
-    expect(() => Builder.getFileMetadata(file)).toThrow();
+    expect(() => getFileMetadata(file)).toThrow();
   });
 
   test("Parse template file (error not ended)", () => {
@@ -65,7 +65,7 @@ describe("Builder", () => {
     @b abcdef\n\
     @c 12-12-2019\n\
     ";
-    expect(() => Builder.getFileMetadata(file)).toThrow();
+    expect(() => getFileMetadata(file)).toThrow();
   });
 
   test("Parse template file (error reversed)", () => {
@@ -76,6 +76,6 @@ describe("Builder", () => {
     @b abcdef\n\
     @c 12-12-2019\n\
     ";
-    expect(() => Builder.getFileMetadata(file)).toThrowError();
+    expect(() => getFileMetadata(file)).toThrowError();
   });
 });

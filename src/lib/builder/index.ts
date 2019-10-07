@@ -1,2 +1,2 @@
-export * from "./interfaces";
+export * from "./metadata";
 export * from "./builder";

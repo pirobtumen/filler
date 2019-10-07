@@ -1,8 +1,8 @@
 import { readdirSync, readFileSync, statSync } from "fs";
 import { join } from "path";
 
-import { IFile } from ".";
-import { exists } from "../command";
+import { IFile } from "../interfaces";
+import { exists } from "../io";
 
 export class DirScanner {
   private files: IFile[] = [];

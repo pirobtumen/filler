@@ -1,7 +1,7 @@
 import * as yargs from "yargs";
 
 import { main } from "./main";
-import { IConfig } from "./lib/filler";
+import { IConfig } from "./lib/interfaces";
 
 const argv = yargs
   .options({
