@@ -1,24 +1,17 @@
 import { IConfig } from "./lib/interfaces";
 import { Store } from "./lib/store";
-import { Filler } from "./lib/filler";
+import { Filler, Loader } from "./lib/filler";
+import { Builder } from "./lib/builder";
+import { defaultConfig } from "./config.default";
 
 export async function main(config: Partial<IConfig>) {
-  const defaultConfig: IConfig = {
-    templateFolder: "templates",
-    postsFolder: "posts",
-    publicFolder: "public",
-    distFolder: "./dist",
-    varsFolder: "vars",
-    projectFolder: "",
-    force: false,
-    mode: "dev",
-    recentPosts: 5
-  };
-
   const store = new Store();
   store.set("config", { ...defaultConfig, ...config });
 
-  const filler = new Filler(store);
-  await filler.init();
+  const loader = new Loader(store);
+  await loader.init();
+
+  const builder = new Builder(store);
+  const filler = new Filler(store, builder);
   await filler.build();
 }
