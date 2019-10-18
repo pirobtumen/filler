@@ -1,81 +1,51 @@
-import { getFileMetadata } from "../../src/lib/builder";
+import { Builder, IBuilders } from "../../src/lib/builder";
+import { Store } from "../../src/lib/store";
+import { IFile } from "../../src/lib/interfaces";
 
 describe("Builder", () => {
-  test("Get template metadata (single line)", () => {
-    const file = "<!-- @template main @a 1234 @b abcdef @c 12-12-2019 -->";
-    const { metadata } = getFileMetadata(file);
-    expect(metadata).toMatchObject({
-      template: "main",
-      a: "1234",
-      b: "abcdef",
-      c: "12-12-2019"
+  test("Build file calls registered builder", async () => {
+    const store = new Store();
+    const fakeFile: IFile = {
+      name: "test.html",
+      extension: "html",
+      modifiedAt: new Date(),
+      path: "",
+      raw: "fake-file"
+    };
+    const fakeBuilder = jest.fn(async (store, file) => {
+      return file;
     });
+    const builders: IBuilders = {
+      html: fakeBuilder
+    };
+
+    const builder = new Builder(store, builders);
+    const output = await builder.buildFile(fakeFile);
+
+    expect(output).toMatchObject(fakeFile);
+    expect(fakeBuilder).toHaveBeenCalledWith(store, fakeFile);
   });
 
-  test("Parse template file (multi line)", () => {
-    const file =
-      "<!--\n\
-    @template main\n\
-    @a 1234\n\
-    @b abcdef\n\
-    @c 12-12-2019\n\
-    -->";
-    const { metadata } = getFileMetadata(file);
-    expect(metadata).toMatchObject({
-      template: "main",
-      a: "1234",
-      b: "abcdef",
-      c: "12-12-2019"
+  test("Build file calls unregistered builder", async () => {
+    const store = new Store();
+    const fakeFile: IFile = {
+      name: "test.css",
+      extension: "css",
+      modifiedAt: new Date(),
+      path: "",
+      raw: "fake-file"
+    };
+    const fakeBuilder = jest.fn(async (store, file) => {
+      return file;
     });
-  });
+    const builders: IBuilders = {
+      html: fakeBuilder
+    };
 
-  test("Parse template file (multi line spaces)", () => {
-    const file =
-      "    <!--\n\
-    @template main\n\
-    @a 1234\n\
-    @b abcdef\n\
-    @c 12-12-2019\n\
-    -->";
-    const { metadata } = getFileMetadata(file);
-    expect(metadata).toMatchObject({
-      template: "main",
-      a: "1234",
-      b: "abcdef",
-      c: "12-12-2019"
-    });
-  });
+    const builder = new Builder(store, builders);
+    const output = await builder.buildFile(fakeFile);
 
-  test("Parse template file (error not started)", () => {
-    const file =
-      "\n\
-    @template main\n\
-    @a 1234\n\
-    @b abcdef\n\
-    @c 12-12-2019\n\
-    -->";
-    expect(() => getFileMetadata(file)).toThrow();
-  });
-
-  test("Parse template file (error not ended)", () => {
-    const file =
-      "    <!--\n\
-    @template main\n\
-    @a 1234\n\
-    @b abcdef\n\
-    @c 12-12-2019\n\
-    ";
-    expect(() => getFileMetadata(file)).toThrow();
-  });
-
-  test("Parse template file (error reversed)", () => {
-    const file =
-      "  -->  <!--\n\
-    @template main\n\
-    @a 1234\n\
-    @b abcdef\n\
-    @c 12-12-2019\n\
-    ";
-    expect(() => getFileMetadata(file)).toThrowError();
+    expect(output).toMatchObject(fakeFile);
+    expect(fakeBuilder).not.toHaveBeenCalled();
   });
 });

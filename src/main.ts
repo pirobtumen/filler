@@ -1,7 +1,7 @@
 import { IConfig } from "./lib/interfaces";
 import { Store } from "./lib/store";
 import { Filler, Loader } from "./lib/filler";
-import { Builder } from "./lib/builder";
+import { Builder, defaultBuilders } from "./lib/builder";
 import { defaultConfig } from "./config.default";
 
 export async function main(config: Partial<IConfig>) {
@@ -11,7 +11,7 @@ export async function main(config: Partial<IConfig>) {
   const loader = new Loader(store);
   await loader.init();
 
-  const builder = new Builder(store);
+  const builder = new Builder(store, defaultBuilders);
   const filler = new Filler(store, builder);
   await filler.build();
 }
