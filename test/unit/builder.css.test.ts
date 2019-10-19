@@ -5,8 +5,8 @@ import { Store } from "../../src/lib/store";
 import { IFile } from "../../src/lib/interfaces";
 import { cssBuilder } from "../../src/lib/builder/builders";
 
-describe("Builder", () => {
-  test("CSS builder", async () => {
+describe("Builder - CSS", () => {
+  test("Uglify css", async () => {
     const store = new Store();
     const fakeFile: IFile = {
       name: "style.css",

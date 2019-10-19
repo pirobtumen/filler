@@ -4,7 +4,7 @@
   "scripts": {
     "filler": "ts-node ./src/index.ts",
     "build": "rm -rf ./build; tsc",
-    "test": "jest --coverage"
+    "test": "jest --coverage --verbose"
   },
   "repository": {
     "type": "git",

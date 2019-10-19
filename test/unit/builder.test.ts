@@ -33,7 +33,7 @@ describe("Builder", () => {
       extension: "css",
       modifiedAt: new Date(),
       path: "",
-      raw: "fake-file"
+      raw: new Buffer("fake-file")
     };
     const fakeBuilder = jest.fn(async (store, file) => {
       return file;

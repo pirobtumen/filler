@@ -23,7 +23,7 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
     output = output.replace("{{blog:recent-posts}}", buildRecentPosts(store));
   }
 
-  const templateVars = output.match(/{{var:(.*)}}/g);
+  const templateVars = output.match(/{{var:([a-z0-9-]*)}}/g);
   if (templateVars) {
     templateVars
       .map(v => v.slice(6, -2))
@@ -37,7 +37,7 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
       });
   }
 
-  file.raw = output;
+  newFile.raw = output;
   return newFile;
 };
 

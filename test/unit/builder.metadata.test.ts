@@ -1,6 +1,6 @@
 import { getFileMetadata } from "../../src/lib/builder";
 
-describe("Builder", () => {
+describe("Builder - Metadata", () => {
   test("Get template metadata (single line)", () => {
     const file = "<!-- @template main @a 1234 @b abcdef @c 12-12-2019 -->";
     const { metadata } = getFileMetadata(file);
