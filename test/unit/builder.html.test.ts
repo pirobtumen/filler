@@ -25,6 +25,7 @@ describe("Builder - HTML", () => {
 
   test("Template not found", async () => {
     const store = new Store();
+    store.set("templates", {});
     const fakeFile: IFile = {
       name: "article.html",
       extension: "html",
@@ -33,7 +34,9 @@ describe("Builder - HTML", () => {
       raw: "<!--\n @template main \n--> <p>test</p>"
     };
 
-    expect(htmlBuilder(store, fakeFile)).rejects.toThrow();
+    return expect(htmlBuilder(store, fakeFile)).rejects.toEqual(
+      new Error("Template main not found.")
+    );
   });
 
   test("Replace content correctly", async () => {

@@ -5,9 +5,9 @@ import { IConfig } from "./lib/interfaces";
 
 const argv = yargs
   .options({
-    f: {
+    folder: {
       type: "string",
-      alias: "folder",
+      alias: "f",
       demandOption: true,
       description: "Project folder"
     },
@@ -20,7 +20,7 @@ const argv = yargs
   .parse();
 
 const config: Partial<IConfig> = {
-  projectFolder: argv.f,
+  projectFolder: argv.folder,
   force: argv.force,
   mode: "dev"
 };

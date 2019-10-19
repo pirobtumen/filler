@@ -13,7 +13,7 @@
   "author": "Alberto Sola",
   "dependencies": {
     "uglifycss": "0.0.29",
-    "yargs": "^14.0.0"
+    "yargs": "14.2.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",

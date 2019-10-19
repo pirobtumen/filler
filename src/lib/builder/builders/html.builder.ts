@@ -12,7 +12,7 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
 
   if (metadata.template) {
     if (!templates[metadata.template]) {
-      throw new Error(`Template  ${metadata.template} not found.`);
+      throw new Error(`Template ${metadata.template} not found.`);
     }
 
     output = templates[metadata.template];
