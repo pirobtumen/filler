@@ -26,6 +26,11 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
     output = output.replace("{{blog:recent-posts}}", buildRecentPosts(store));
   }
 
+  const archive = output.match(/{{blog:archive}}/g);
+  if (archive) {
+    output = output.replace("{{blog:archive}}", buildArchive(store));
+  }
+
   const templateVars = output.match(/{{var:([a-z0-9-]*)}}/g);
   if (templateVars) {
     templateVars
@@ -44,6 +49,30 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
   return newFile;
 };
 
+const getPostMetadata = (post: IFile) => {
+  const { metadata } = getFileMetadata(post);
+  // TODO validation
+  const [day, month, year] = metadata.date!.split("-").map(d => parseInt(d));
+
+  const postMedata: IPostMetadata = {
+    title: metadata.title!,
+    description: metadata.description!,
+    author: metadata.author!,
+    date: metadata.date!,
+    createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
+  };
+
+  return postMedata;
+};
+
+const fillPostMetadata = (template: string, postMetadata: IPostMetadata) => {
+  return template
+    .replace("{{title}}", postMetadata.title)
+    .replace("{{author}}", postMetadata.author)
+    .replace("{{date}}", postMetadata.date)
+    .replace("{{description}}", postMetadata.description);
+};
+
 const buildRecentPosts = (store: IStore) => {
   const config = store.get("config");
   const posts = store.get("posts");
@@ -54,21 +83,7 @@ const buildRecentPosts = (store: IStore) => {
   }
 
   return posts
-    .map((post: IFile) => {
-      const { metadata } = getFileMetadata(post);
-      // TODO validation
-      const [day, month, year] = metadata
-        .date!.split("-")
-        .map(d => parseInt(d));
-
-      return {
-        title: metadata.title!,
-        description: metadata.description!,
-        author: metadata.author!,
-        date: metadata.date!,
-        createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
-      } as IPostMetadata;
-    })
+    .map((post: IFile) => getPostMetadata(post))
     .sort((p1: IPostMetadata, p2: IPostMetadata) => {
       const d1 = p1.createdAt;
       const d2 = p2.createdAt;
@@ -78,13 +93,29 @@ const buildRecentPosts = (store: IStore) => {
       else return 1;
     })
     .slice(0, config.recentPosts)
-    .map((p: IPostMetadata) => {
-      const recentPost = recentPostTemplate
-        .replace("{{title}}", p.title)
-        .replace("{{author}}", p.author)
-        .replace("{{date}}", p.date)
-        .replace("{{description}}", p.description);
-      return recentPost;
+    .map((pm: IPostMetadata) => fillPostMetadata(recentPostTemplate, pm))
+    .join("");
+};
+
+const buildArchive = (store: IStore) => {
+  const config = store.get("config");
+  const posts = store.get("posts");
+  const { archivePost: archiveTemplate } = store.get("templates");
+
+  if (!archiveTemplate) {
+    throw new Error("There is no template for archive.");
+  }
+
+  return posts
+    .map((post: IFile) => getPostMetadata(post))
+    .sort((p1: IPostMetadata, p2: IPostMetadata) => {
+      const d1 = p1.createdAt;
+      const d2 = p2.createdAt;
+
+      if (d1 > d2) return -1;
+      else if (d1 === d2) return 0;
+      else return 1;
     })
+    .map((pm: IPostMetadata) => fillPostMetadata(archiveTemplate, pm))
     .join("");
 };

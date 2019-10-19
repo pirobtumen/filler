@@ -135,7 +135,9 @@ describe("Builder - HTML", () => {
       raw: "<!--\n @template main \n--> <div>{{blog:recent-posts}}</div>"
     };
 
-    expect(htmlBuilder(store, fakeFile)).rejects.toThrowError();
+    return expect(htmlBuilder(store, fakeFile)).rejects.toThrow(
+      new Error("There is no template for recent posts.")
+    );
   });
 
   test("Recent posts", async () => {
@@ -163,6 +165,87 @@ describe("Builder - HTML", () => {
       ...fakeFile,
       raw:
         "<div> <div><div>Fourth post</div><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p><div>Third post</div><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div></div>"
+    };
+
+    const output = await htmlBuilder(store, fakeFile);
+    expect(output).toMatchObject(result);
+  });
+
+  test("Recent posts - use partial metadata", async () => {
+    const store = new Store();
+    store.set("config", { recentPosts: 2 });
+    store.set("templates", {
+      main: "<div>{{content}}</div>",
+      recentPost: "<div>{{title}}</div><p>{{author}}</p>"
+    });
+    store.set(
+      "posts",
+      await DirScanner.scanAndGetFiles("./test/data/project/posts")
+    );
+
+    const fakeFile: IFile = {
+      name: "article.html",
+      extension: "html",
+      modifiedAt: new Date(),
+      path: "",
+      raw: "<!--\n @template main \n--> <div>{{blog:recent-posts}}</div>"
+    };
+
+    const result: IFile = {
+      ...fakeFile,
+      raw:
+        "<div> <div><div>Fourth post</div><p>Test</p><div>Third post</div><p>Test</p></div></div>"
+    };
+
+    const output = await htmlBuilder(store, fakeFile);
+    expect(output).toMatchObject(result);
+  });
+
+  test("No archive post template file", async () => {
+    const store = new Store();
+    store.set("config", { recentPosts: 2 });
+    store.set("templates", {
+      main: "<div>{{content}}</div>"
+    });
+    store.set("posts", DirScanner.scanAndGetFiles("./test/data/project/posts"));
+
+    const fakeFile: IFile = {
+      name: "article.html",
+      extension: "html",
+      modifiedAt: new Date(),
+      path: "",
+      raw: "<!--\n @template main \n--> <div>{{blog:archive}}</div>"
+    };
+
+    return expect(htmlBuilder(store, fakeFile)).rejects.toThrow(
+      new Error("There is no template for archive.")
+    );
+  });
+
+  test("Archive", async () => {
+    const store = new Store();
+    store.set("config", { recentPosts: 2 });
+    store.set("templates", {
+      main: "<div>{{content}}</div>",
+      archivePost: "<div>{{title}}</div><p>{{date}}</p>"
+    });
+    store.set(
+      "posts",
+      await DirScanner.scanAndGetFiles("./test/data/project/posts")
+    );
+
+    const fakeFile: IFile = {
+      name: "article.html",
+      extension: "html",
+      modifiedAt: new Date(),
+      path: "",
+      raw: "<!--\n @template main \n--> <div>{{blog:archive}}</div>"
+    };
+
+    const result: IFile = {
+      ...fakeFile,
+      raw:
+        "<div> <div><div>Fourth post</div><p>04-01-2019</p><div>Third post</div><p>03-01-2019</p><div>Second post</div><p>02-01-2019</p><div>First post</div><p>01-01-2019</p></div></div>"
     };
 
     const output = await htmlBuilder(store, fakeFile);
