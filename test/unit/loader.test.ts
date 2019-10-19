@@ -54,9 +54,15 @@ describe("Loader", () => {
 
     expect(Object.keys(store.get("templates"))).toMatchObject(["main"]);
     expect(Object.keys(store.get("vars"))).toEqual(["analytics", "scripts"]);
-    expect(store.get("posts").map((p: IFile) => p.name)).toEqual([
-      "first.html",
-      "second.html"
-    ]);
+    expect(
+      store
+        .get("posts")
+        .every(
+          (p: IFile) =>
+            ["first.html", "second.html", "third.html", "fourth.html"].indexOf(
+              p.name
+            ) > -1
+        )
+    ).toBeTruthy();
   });
 });

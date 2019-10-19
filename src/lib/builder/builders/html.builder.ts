@@ -7,12 +7,15 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
   const vars = store.get("vars");
 
   const newFile = { ...file };
-  const { metadata, html: content } = getFileMetadata(file.raw.toString());
+  const { metadata, html: content } = getFileMetadata(newFile);
   let output = "";
 
   if (metadata.template) {
-    output = templates[metadata.template];
+    if (!templates[metadata.template]) {
+      throw new Error(`Template  ${metadata.template} not found.`);
+    }
 
+    output = templates[metadata.template];
     output = output.replace("{{content}}", content);
   } else {
     output = content;
@@ -44,10 +47,15 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
 const buildRecentPosts = (store: IStore) => {
   const config = store.get("config");
   const posts = store.get("posts");
+  const { recentPost: recentPostTemplate } = store.get("templates");
+
+  if (!recentPostTemplate) {
+    throw new Error("There is no template for recent posts.");
+  }
 
   return posts
     .map((post: IFile) => {
-      const { metadata } = getFileMetadata(post.raw.toString());
+      const { metadata } = getFileMetadata(post);
       // TODO validation
       const [day, month, year] = metadata
         .date!.split("-")
@@ -57,6 +65,7 @@ const buildRecentPosts = (store: IStore) => {
         title: metadata.title!,
         description: metadata.description!,
         author: metadata.author!,
+        date: metadata.date!,
         createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
       } as IPostMetadata;
     })
@@ -70,7 +79,12 @@ const buildRecentPosts = (store: IStore) => {
     })
     .slice(0, config.recentPosts)
     .map((p: IPostMetadata) => {
-      return "post-title";
+      const recentPost = recentPostTemplate
+        .replace("{{title}}", p.title)
+        .replace("{{author}}", p.author)
+        .replace("{{date}}", p.date)
+        .replace("{{description}}", p.description);
+      return recentPost;
     })
-    .join();
+    .join("");
 };

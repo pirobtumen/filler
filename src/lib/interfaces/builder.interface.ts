@@ -36,5 +36,6 @@ export interface IPostMetadata {
   title: string;
   description: string;
   author: string;
+  date: string;
   createdAt: Date;
 }
