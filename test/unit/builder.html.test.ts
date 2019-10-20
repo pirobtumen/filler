@@ -203,7 +203,6 @@ describe("Builder - HTML", () => {
 
   test("No archive post template file", async () => {
     const store = new Store();
-    store.set("config", { recentPosts: 2 });
     store.set("templates", {
       main: "<div>{{content}}</div>"
     });
@@ -224,7 +223,6 @@ describe("Builder - HTML", () => {
 
   test("Archive", async () => {
     const store = new Store();
-    store.set("config", { recentPosts: 2 });
     store.set("templates", {
       main: "<div>{{content}}</div>",
       archivePost: "<div>{{title}}</div><p>{{date}}</p>"

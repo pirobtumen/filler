@@ -73,6 +73,15 @@ const fillPostMetadata = (template: string, postMetadata: IPostMetadata) => {
     .replace("{{description}}", postMetadata.description);
 };
 
+const sortPosts = (p1: IPostMetadata, p2: IPostMetadata) => {
+  const d1 = p1.createdAt;
+  const d2 = p2.createdAt;
+
+  if (d1 > d2) return -1;
+  else if (d1 === d2) return 0;
+  else return 1;
+};
+
 const buildRecentPosts = (store: IStore) => {
   const config = store.get("config");
   const posts = store.get("posts");
@@ -84,21 +93,13 @@ const buildRecentPosts = (store: IStore) => {
 
   return posts
     .map((post: IFile) => getPostMetadata(post))
-    .sort((p1: IPostMetadata, p2: IPostMetadata) => {
-      const d1 = p1.createdAt;
-      const d2 = p2.createdAt;
-
-      if (d1 > d2) return -1;
-      else if (d1 === d2) return 0;
-      else return 1;
-    })
+    .sort(sortPosts)
     .slice(0, config.recentPosts)
     .map((pm: IPostMetadata) => fillPostMetadata(recentPostTemplate, pm))
     .join("");
 };
 
 const buildArchive = (store: IStore) => {
-  const config = store.get("config");
   const posts = store.get("posts");
   const { archivePost: archiveTemplate } = store.get("templates");
 
@@ -108,14 +109,7 @@ const buildArchive = (store: IStore) => {
 
   return posts
     .map((post: IFile) => getPostMetadata(post))
-    .sort((p1: IPostMetadata, p2: IPostMetadata) => {
-      const d1 = p1.createdAt;
-      const d2 = p2.createdAt;
-
-      if (d1 > d2) return -1;
-      else if (d1 === d2) return 0;
-      else return 1;
-    })
+    .sort(sortPosts)
     .map((pm: IPostMetadata) => fillPostMetadata(archiveTemplate, pm))
     .join("");
 };
