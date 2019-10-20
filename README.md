@@ -1,3 +1,5 @@
+[TravisCI](https://travis-ci.com/pirobtumen/filler.svg?branch=master)
+
 # Filler
 
 Static web sites made easy.
