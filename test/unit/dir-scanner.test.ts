@@ -3,13 +3,12 @@ import { DirScanner } from "../../src/lib/dir-scanner";
 describe("DirScanner", () => {
   test("Folder does not exist", async () => {
     const dir = "no_folder";
-    expect(DirScanner.explore(dir)).rejects.toThrowError();
+    expect(DirScanner.scanAndGetFiles(dir)).rejects.toThrowError();
   });
 
   test("Folder exists", async () => {
     const dir = "./test/data/dir-scanner";
-    const scanner = await DirScanner.explore(dir);
-    const files = scanner.getFiles();
+    const files = await DirScanner.scanAndGetFiles(dir);
     expect(files).toBeTruthy();
     expect(files.length).toBe(2);
     expect(files[0].name).toBe("text.txt");

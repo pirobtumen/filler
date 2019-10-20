@@ -1,10 +1,11 @@
 {
   "name": "filler",
   "version": "0.1.0",
+  "main": "./src/index.js",
   "scripts": {
     "filler": "ts-node ./src/index.ts",
-    "build": "rm -rf ./build; tsc",
-    "test": "jest"
+    "build": "rm -rf ./filler; tsc",
+    "test": "jest --coverage --verbose"
   },
   "repository": {
     "type": "git",
@@ -12,10 +13,12 @@
   },
   "author": "Alberto Sola",
   "dependencies": {
+    "argparse": "^1.0.10",
     "uglifycss": "0.0.29",
-    "yargs": "^14.0.0"
+    "yargs": "14.2.0"
   },
   "devDependencies": {
+    "@types/argparse": "^1.0.36",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.1",
     "@types/uglifycss": "0.0.5",

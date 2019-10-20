@@ -3,7 +3,9 @@ export interface IConfig {
   templateFolder: string;
   distFolder: string;
   publicFolder: string;
-  varsFolder: string;
+  snippetsFolder: string;
   projectFolder: string;
+  postsFolder: string;
   mode: string;
+  recentPosts: number;
 }
