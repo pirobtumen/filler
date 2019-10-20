@@ -1,21 +1,26 @@
 # Filler
 
-1. Description
-2. Features & Roadmap
-3. Installation
-4. Commands
-5. Folder structure
-6. Template system
-7. Snippet system
-8. Blog system
-9. Contribute
-10. License
+Static web sites made easy.
 
-## Static web sites made easy.
+**Table of content**
+
+- [Filler](#filler)
+  - [Objective](#objective)
+  - [Features and Roadmap](#features-and-roadmap)
+- [Installation](#installation)
+  - [Commands](#commands)
+  - [Folder structure](#folder-structure)
+  - [Template system](#template-system)
+  - [Snippet system](#snippet-system)
+  - [Blog system](#blog-system)
+- [Contribute](#contribute)
+- [License](#license)
+
+## Objective
 
 Filler is a tool to create a static website using templates, reusing code and saving time. Its main purpose is to be as simple as possible to use.
 
-## Features & Roadmap
+## Features and Roadmap
 
 - [x] Uses generic file types only. [v0.1.0]
 - [x] Template system. [v0.1.0]
@@ -31,7 +36,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
 
-## Installation
+# Installation
 
 Install node [[Download link](https://nodejs.org/en/download/)] [Tested version 12.12]
 
@@ -186,13 +191,13 @@ I'm the main web page!!
 
 You can control the number of recent post displayed with the `build --recentPosts <number>` argument.
 
-## Contribute
+# Contribute
 
 Feel free to:
 
 - Submit bugs/features.
 - Open a Pull Request with some fix/feature.
 
-## License
+# License
 
 Filler is distributed under BSD 3-Clause license. Check the LICENSE.md file.
