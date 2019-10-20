@@ -28,7 +28,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [x] Progressive builds (it only builds files that have changed, but you can `--force` it). [v0.1.0]
 - [x] CSS minification. [v0.1.0]
 - [x] Blog post, recent posts and archive. [v0.1.0]
-- [ ] Markdown support.
+- [x] Markdown support.
 - [ ] Webpack support.
 - [ ] React support.
 - [ ] Serve project (build in memory and watch for file changes).
