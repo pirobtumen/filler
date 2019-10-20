@@ -1,5 +1,5 @@
 import { IBuilder, IFile, IStore } from "../../interfaces";
-import { cssBuilder, htmlBuilder } from "./builders";
+import { cssBuilder, htmlBuilder, markdownBuilder } from "./builders";
 
 export interface IBuilders {
   [key: string]: IBuilder;
@@ -7,7 +7,8 @@ export interface IBuilders {
 
 export const defaultBuilders = {
   html: htmlBuilder,
-  css: cssBuilder
+  css: cssBuilder,
+  md: markdownBuilder
 };
 
 export class Builder {

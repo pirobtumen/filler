@@ -49,7 +49,7 @@ node filler --help
 - build \<folder\> [OPTIONS]
   - folder: project folder path. E.g.: "~/Projects/myweb".
   - --force: force build all files.
-  - --mode [dev, prod]: build mode. Replace specifi snippets.
+  - --mode [dev, prod]: build mode. Replace specific snippets.
   - --recentPosts [number]: number of recent posts rendered.
   
 
@@ -80,7 +80,7 @@ Build command for development:
 
 Build command for production (injects analytics):
 
-`node filler ~/Projects/myweb`
+`node filler ~/Projects/myweb --mode prod`
 
 The output folder will contain:
 
