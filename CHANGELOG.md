@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] - Unreleased
 ### Added
 - Markdown support.
+- Build command supports output folder option and validation.
 
 ## [0.1.0] - 20-10-2019
 ### Added

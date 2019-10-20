@@ -23,7 +23,8 @@ buildCmd.addArgument(["folder"]);
 buildCmd.addArgument(["--mode"], {
   action: "store",
   help: "Build mode",
-  defaultValue: "dev"
+  type: "string",
+  choices: ["dev", "prod"]
 });
 buildCmd.addArgument(["--force"], {
   action: "storeTrue",
@@ -31,18 +32,30 @@ buildCmd.addArgument(["--force"], {
 });
 buildCmd.addArgument(["--recentPosts"], {
   action: "store",
-  help: "Number of recent posts to render"
+  help: "Number of recent posts to render",
+  type: "int"
+});
+buildCmd.addArgument(["--output", "-o"], {
+  action: "store",
+  help: "Output folder",
+  type: "string"
 });
 
 const args = parser.parseArgs();
 switch (args.command) {
   case "build":
-    // TODO Validation
     const config: Partial<IConfig> = {
-      mode: args.mode,
       force: args.force,
       projectFolder: args.folder
     };
+
+    if (args.mode) {
+      config.mode = args.mode;
+    }
+
+    if (args.output) {
+      config.distFolder = args.output;
+    }
 
     if (args.recentPosts) {
       config.recentPosts = args.recentPosts;
