@@ -1,4 +1,4 @@
-import { IStore } from "../interfaces";
+import { IStore } from "../../interfaces";
 
 export class Store implements IStore {
   private data: { [key: string]: any } = {};

@@ -1,6 +1,6 @@
-import { Builder, IBuilders } from "../../src/lib/builder";
+import { Builder, IBuilders } from "../../src/domain/builder";
 import { Store } from "../../src/lib/store";
-import { IFile } from "../../src/lib/interfaces";
+import { IFile } from "../../src/interfaces";
 
 describe("Builder", () => {
   test("Build file calls registered builder", async () => {
@@ -33,7 +33,7 @@ describe("Builder", () => {
       extension: "css",
       modifiedAt: new Date(),
       path: "",
-      raw: new Buffer("fake-file")
+      raw: "fake-file"
     };
     const fakeBuilder = jest.fn(async (store, file) => {
       return file;

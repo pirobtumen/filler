@@ -1,4 +1,4 @@
-import { IFileMetadata, IFile } from "../interfaces";
+import { IFileMetadata, IFile } from "../../interfaces";
 
 export function getFileMetadata(file: IFile) {
   const fileRaw = file.raw.toString();

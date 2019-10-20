@@ -1,10 +1,10 @@
-import { IBuilder, IFile, IStore, IPostMetadata } from "../../interfaces";
-import { getFileMetadata } from "..";
+import { IBuilder, IFile, IStore, IPostMetadata } from "../../../interfaces";
+import { getFileMetadata } from "../../builder";
 
 export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
   const config = store.get("config");
   const templates = store.get("templates");
-  const vars = store.get("vars");
+  const snippets = store.get("snippets");
 
   const newFile = { ...file };
   const { metadata, html: content } = getFileMetadata(newFile);
@@ -31,17 +31,18 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
     output = output.replace("{{blog:archive}}", buildArchive(store));
   }
 
-  const templateVars = output.match(/{{var:([a-z0-9-]*)}}/g);
-  if (templateVars) {
-    templateVars
-      .map(v => v.slice(6, -2))
+  const templateSnippets = output.match(/{{snippet:([a-z0-9-]*)}}/g);
+  if (templateSnippets) {
+    templateSnippets
+      .map(v => v.slice(10, -2))
       .forEach((n, i) => {
-        const varValue =
-          config.mode === vars[n].configMode || vars[n].configMode === "all"
-            ? vars[n].value
+        const snippetValue =
+          config.mode === snippets[n].configMode ||
+          snippets[n].configMode === "all"
+            ? snippets[n].value
             : "";
 
-        output = output.replace(templateVars[i], varValue);
+        output = output.replace(templateSnippets[i], snippetValue);
       });
   }
 

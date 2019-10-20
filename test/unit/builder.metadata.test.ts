@@ -1,5 +1,5 @@
-import { getFileMetadata } from "../../src/lib/builder";
-import { IFile } from "../../src/lib/interfaces";
+import { getFileMetadata } from "../../src/domain/builder";
+import { IFile } from "../../src/interfaces";
 
 describe("Builder - Metadata", () => {
   test("Get template metadata (single line)", () => {

@@ -1,4 +1,4 @@
-import { IBuilder, IFile, IStore } from "../interfaces";
+import { IBuilder, IFile, IStore } from "../../interfaces";
 import { cssBuilder, htmlBuilder } from "./builders";
 
 export interface IBuilders {

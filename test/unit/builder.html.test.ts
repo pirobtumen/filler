@@ -1,6 +1,6 @@
 import { Store } from "../../src/lib/store";
-import { IFile } from "../../src/lib/interfaces";
-import { htmlBuilder } from "../../src/lib/builder/builders";
+import { IFile } from "../../src/interfaces";
+import { htmlBuilder } from "../../src/domain/builder/builders";
 import { DirScanner } from "../../src/lib/dir-scanner";
 
 describe("Builder - HTML", () => {
@@ -62,13 +62,13 @@ describe("Builder - HTML", () => {
     expect(output).toMatchObject(result);
   });
 
-  test("Replace vars inside template correctly", async () => {
+  test("Replace snippets inside template correctly", async () => {
     const store = new Store();
     store.set("config", { mode: "prod" });
     store.set("templates", {
-      main: "<div>{{var:myvar1}}{{content}}</div>"
+      main: "<div>{{snippet:myvar1}}{{content}}</div>"
     });
-    store.set("vars", {
+    store.set("snippets", {
       myvar1: { configMode: "all", value: "ABCD" },
       myvar2: { configMode: "all", value: "XYZA" }
     });
@@ -78,7 +78,7 @@ describe("Builder - HTML", () => {
       extension: "html",
       modifiedAt: new Date(),
       path: "",
-      raw: "<!--\n @template main \n--> <p>{{var:myvar2}}</p>"
+      raw: "<!--\n @template main \n--> <p>{{snippet:myvar2}}</p>"
     };
 
     const result: IFile = {
@@ -90,13 +90,13 @@ describe("Builder - HTML", () => {
     expect(output).toMatchObject(result);
   });
 
-  test("Replace vars configMode", async () => {
+  test("Replace snippets configMode", async () => {
     const store = new Store();
     store.set("config", { mode: "prod" });
     store.set("templates", {
-      main: "<div>{{var:myvar1}}{{content}}{{var:myvar3}}</div>"
+      main: "<div>{{snippet:myvar1}}{{content}}{{snippet:myvar3}}</div>"
     });
-    store.set("vars", {
+    store.set("snippets", {
       myvar1: { configMode: "prod", value: "ABCD" },
       myvar2: { configMode: "dev", value: "XYZA" },
       myvar3: { configMode: "all", value: "always" }
@@ -107,7 +107,7 @@ describe("Builder - HTML", () => {
       extension: "html",
       modifiedAt: new Date(),
       path: "",
-      raw: "<!--\n @template main \n--> <p>{{var:myvar2}}</p>"
+      raw: "<!--\n @template main \n--> <p>{{snippet:myvar2}}</p>"
     };
 
     const result: IFile = {

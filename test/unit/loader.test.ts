@@ -1,7 +1,7 @@
-import { Loader } from "../../src/lib/filler";
+import { Loader } from "../../src/domain/filler";
 import { Store } from "../../src/lib/store";
-import { IStore, IConfig, IFile } from "../../src/lib/interfaces";
-import { defaultConfig } from "../../src/config.default";
+import { IStore, IConfig, IFile } from "../../src/interfaces";
+import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 describe("Loader", () => {
   let store: IStore;
@@ -25,7 +25,7 @@ describe("Loader", () => {
     await loader.init();
 
     expect(store.get("templates")).toEqual({});
-    expect(store.get("vars")).toEqual({});
+    expect(store.get("snippets")).toEqual({});
     expect(store.get("posts")).toEqual([]);
   });
 
@@ -39,7 +39,7 @@ describe("Loader", () => {
     await loader.init();
 
     expect(store.get("templates")).toEqual({});
-    expect(store.get("vars")).toEqual({});
+    expect(store.get("snippets")).toEqual({});
     expect(store.get("posts")).toEqual([]);
   });
 
@@ -53,7 +53,10 @@ describe("Loader", () => {
     await loader.init();
 
     expect(Object.keys(store.get("templates"))).toMatchObject(["main"]);
-    expect(Object.keys(store.get("vars"))).toEqual(["analytics", "scripts"]);
+    expect(Object.keys(store.get("snippets"))).toEqual([
+      "analytics",
+      "scripts"
+    ]);
     expect(
       store
         .get("posts")

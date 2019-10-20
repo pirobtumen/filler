@@ -2,8 +2,8 @@ jest.mock("uglifycss");
 import { processString } from "uglifycss";
 
 import { Store } from "../../src/lib/store";
-import { IFile } from "../../src/lib/interfaces";
-import { cssBuilder } from "../../src/lib/builder/builders";
+import { IFile } from "../../src/interfaces";
+import { cssBuilder } from "../../src/domain/builder/builders";
 
 describe("Builder - CSS", () => {
   test("Uglify css", async () => {

@@ -1,9 +1,4 @@
-import { IFile } from ".";
-
-export interface IStore {
-  set: (key: string, value: any) => void;
-  get: (key: string) => any;
-}
+import { IFile, IStore } from ".";
 
 export interface IBuilder {
   (store: IStore, file: IFile): Promise<IFile>;
@@ -18,18 +13,6 @@ export interface IBuildFile {
   file: IFile;
   metadata: IFileMetadata;
   parsed: string;
-}
-
-export interface IConfig {
-  force: boolean;
-  templateFolder: string;
-  distFolder: string;
-  publicFolder: string;
-  varsFolder: string;
-  projectFolder: string;
-  postsFolder: string;
-  mode: string;
-  recentPosts: number;
 }
 
 export interface IPostMetadata {

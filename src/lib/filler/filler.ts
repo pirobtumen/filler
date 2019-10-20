@@ -3,8 +3,8 @@ import { join } from "path";
 
 import { DirScanner } from "../dir-scanner";
 import { mkdir, unlink } from "../io";
-import { IFile, IStore } from "../interfaces";
-import { Builder } from "../builder";
+import { IFile, IStore } from "../../interfaces";
+import { Builder } from "../../domain/builder";
 
 export class Filler {
   private store: IStore;
@@ -80,7 +80,7 @@ export class Filler {
     }
 
     if (filesUpdated === 0) {
-      console.log("WARNING: Any file was updated.");
+      console.log("WARNING: There are no changes.");
     }
   }
 }

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "fs";
 import { join } from "path";
 
-import { IFile } from "../interfaces";
+import { IFile } from "../../interfaces";
 import { exists } from "../io";
 
 export class DirScanner {
