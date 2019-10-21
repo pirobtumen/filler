@@ -1,8 +1,8 @@
 import { processString as uglifyCssString } from "uglifycss";
 
-import { IBuilder, IFile, IStore } from "../../../interfaces";
+import { IBuilder, IFile, ICache } from "../../../interfaces";
 
-export const cssBuilder: IBuilder = async (store: IStore, file: IFile) => {
+export const cssBuilder: IBuilder = async (cache: ICache, file: IFile) => {
   const newFile = { ...file };
   newFile.raw = uglifyCssString(file.raw.toString());
   return newFile;

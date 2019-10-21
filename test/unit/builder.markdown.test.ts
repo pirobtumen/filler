@@ -1,7 +1,7 @@
 import marked from "marked";
 import { htmlBuilder } from "../../src/domain/builder/builders/html.builder";
 
-import { Store } from "../../src/lib/store";
+import { MemoryCache } from "../../src/lib/cache";
 import { IFile } from "../../src/interfaces";
 import { markdownBuilder } from "../../src/domain/builder/builders/markdown.builder";
 
@@ -16,7 +16,7 @@ const mockedMarked = marked as jest.Mocked<typeof marked>;
 
 describe("Builder - Markdown", () => {
   test("parseMarkdown and htmlBuilder are called", async () => {
-    const store = new Store();
+    const cache = new MemoryCache();
     const fakeFile: IFile = {
       name: "article.html",
       extension: "html",
@@ -25,12 +25,12 @@ describe("Builder - Markdown", () => {
       raw: "<!--\n @template main\n-->\n # Hey\nHi"
     };
 
-    await markdownBuilder(store, fakeFile);
+    await markdownBuilder(cache, fakeFile);
     expect(marked.parse).toHaveBeenCalledWith(
       fakeFile.raw,
       expect.any(Function)
     );
-    expect(htmlBuilder).toHaveBeenCalledWith(store, {
+    expect(htmlBuilder).toHaveBeenCalledWith(cache, {
       ...fakeFile,
       raw: "html-output"
     });
@@ -42,7 +42,7 @@ describe("Builder - Markdown", () => {
         callback(new Error("Markdown error"), null)
       )
     );
-    const store = new Store();
+    const cache = new MemoryCache();
     const fakeFile: IFile = {
       name: "article.html",
       extension: "html",
@@ -51,7 +51,7 @@ describe("Builder - Markdown", () => {
       raw: "<!--\n @template main\n-->\n # Hey\nHi"
     };
 
-    return expect(markdownBuilder(store, fakeFile)).rejects.toThrow(
+    return expect(markdownBuilder(cache, fakeFile)).rejects.toThrow(
       new Error("Markdown error")
     );
   });

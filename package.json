@@ -5,7 +5,7 @@
   "scripts": {
     "filler": "ts-node ./src/index.ts",
     "build": "rm -rf ./filler; tsc",
-    "test": "jest --coverage --verbose",
+    "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {

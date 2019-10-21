@@ -1,7 +1,7 @@
-import { IFile, IStore } from ".";
+import { IFile, ICache } from ".";
 
 export interface IBuilder {
-  (store: IStore, file: IFile): Promise<IFile>;
+  (cache: ICache, file: IFile): Promise<IFile>;
 }
 
 export interface IFileMetadata {

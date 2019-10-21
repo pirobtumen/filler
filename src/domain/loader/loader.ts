@@ -1,6 +1,6 @@
 import { join } from "path";
 
-import { IStore, IConfig } from "../../interfaces";
+import { ICache } from "../../interfaces";
 import { DirScanner } from "../../lib/dir-scanner";
 import { readFile } from "../../lib/io";
 
@@ -10,10 +10,10 @@ interface IVar {
 }
 
 export class Loader {
-  private store: IStore;
+  private cache: ICache;
 
-  constructor(store: IStore) {
-    this.store = store;
+  constructor(cache: ICache) {
+    this.cache = cache;
   }
 
   public async init() {
@@ -23,13 +23,13 @@ export class Loader {
       this.loadPosts()
     ]);
 
-    this.store.set("templates", templates);
-    this.store.set("snippets", snippets);
-    this.store.set("posts", posts);
+    this.cache.set("templates", templates);
+    this.cache.set("snippets", snippets);
+    this.cache.set("posts", posts);
   }
 
   private async loadTemplates() {
-    const config = this.store.get("config");
+    const config = this.cache.get("config");
     const templates: { [key: string]: string } = {};
     const templateFolder = join(config.projectFolder, config.templateFolder);
     try {
@@ -47,7 +47,7 @@ export class Loader {
   }
 
   private async loadSnippets() {
-    const config = this.store.get("config");
+    const config = this.cache.get("config");
     const snippets: {
       [key: string]: IVar;
     } = {};
@@ -69,7 +69,7 @@ export class Loader {
   }
 
   private async loadPosts() {
-    const config = this.store.get("config");
+    const config = this.cache.get("config");
     const postsFolder = join(config.projectFolder, config.postsFolder);
     try {
       return await DirScanner.scanAndGetFiles(postsFolder);

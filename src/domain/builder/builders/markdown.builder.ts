@@ -1,6 +1,6 @@
 import { parse } from "marked";
 
-import { IBuilder, IFile, IStore } from "../../../interfaces";
+import { IBuilder, IFile, ICache } from "../../../interfaces";
 import { htmlBuilder } from "./html.builder";
 
 const parseMarkdown = async (markdown: string) => {
@@ -12,7 +12,16 @@ const parseMarkdown = async (markdown: string) => {
   });
 };
 
-export const markdownBuilder: IBuilder = async (store: IStore, file: IFile) => {
-  const newFile = { ...file, raw: await parseMarkdown(file.raw.toString()) };
-  return htmlBuilder(store, newFile);
+export const markdownBuilder: IBuilder = async (cache: ICache, file: IFile) => {
+  const nameParts = file.name.split(".");
+  nameParts[nameParts.length - 1] = "html";
+
+  const newFile: IFile = {
+    ...file,
+    name: nameParts.join("."),
+    extension: "html",
+    raw: await parseMarkdown(file.raw.toString())
+  };
+
+  return htmlBuilder(cache, newFile);
 };
