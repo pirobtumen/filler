@@ -1,6 +1,6 @@
 import { MemoryCache } from "../../src/lib/cache";
 
-describe("Store", () => {
+describe("MemoryCache", () => {
   test("Set/Get keys", () => {
     const cache = new MemoryCache();
     cache.set("test", "hello");
