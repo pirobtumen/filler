@@ -51,7 +51,7 @@ Install node [[Download link](https://nodejs.org/en/download/)][tested version 1
 
 Install filler:
 
-```
+```shell
 git clone https://github.com/pirobtumen/filler.git
 cd filler
 npm ci
@@ -117,16 +117,16 @@ The output folder will contain:
 
 The files inside the public folder can use any template created inside the `/templates` folder. The idea is to set the property `@template <template filename>` inside a comment in the top part of the file. Let's see an example:
 
-```
+```html
 File: ./public/index.html
 <!--
   @template main
 -->
 
-I'm the main web page!!
+<h1>I'm the main web page!!</h1>
 ```
 
-```
+```html
 File: ./templates/main.html
 <div>
 {{content}}
@@ -140,6 +140,26 @@ Result: ./dist/index.html
 <div>
 I'm the main web page!!
 </div>
+```
+
+It also supports Markdown files:
+
+```markdown
+File: ./posts/my-first-post.md
+<!--
+  @template post
+  @author Some name
+  @title First post
+  @date 01-01-2019
+  @description First blog test
+-->
+
+# I'm the first post!!
+
+With a list:
+- A
+- B
+- C
 ```
 
 ## Snippet system
