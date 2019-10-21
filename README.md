@@ -32,6 +32,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [x] CSS minification. [v0.1.0]
 - [x] Blog post, recent posts and archive. [v0.1.0]
 - [x] Markdown support.
+- [ ] Improve logging system.
 - [ ] Serve project: build in memory and watch for file changes.
 - [ ] Support saving into cloud storage (AWS S3, Google Cloud Storage...).
 - [ ] Multilingual sites.
@@ -60,9 +61,10 @@ node filler --help
 - build \<folder\> [OPTIONS]
 
   - folder: project folder path. E.g.: "~/Projects/myweb".
-  - --force: force build all files.
-  - --mode [dev, prod]: build mode. Replace specific snippets.
-  - --recentPosts [number]: number of recent posts rendered.
+  - --output: output folder path. Default: ./dist
+  - --force: force build all files. Default: false
+  - --mode [dev, prod]: build mode. Replace specific snippets. Default: dev
+  - --recentPosts [number]: number of recent posts rendered. Default: 5
 
 ## Folder structure
 
