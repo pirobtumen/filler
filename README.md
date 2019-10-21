@@ -32,9 +32,11 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [x] CSS minification. [v0.1.0]
 - [x] Blog post, recent posts and archive. [v0.1.0]
 - [x] Markdown support.
+- [ ] Serve project: build in memory and watch for file changes.
+- [ ] Support saving into cloud storage (AWS S3, Google Cloud Storage...).
+- [ ] Multilingual sites.
 - [ ] Webpack support.
 - [ ] React support.
-- [ ] Serve project (build in memory and watch for file changes).
 - [ ] Server Side Rendering.
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
