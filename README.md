@@ -1,21 +1,29 @@
+[![TravisCI](https://travis-ci.com/pirobtumen/filler.svg?branch=master)](https://travis-ci.com/pirobtumen/filler)
+[![Coverage Status](https://coveralls.io/repos/github/pirobtumen/filler/badge.svg?branch=master)](https://coveralls.io/github/pirobtumen/filler?branch=master)
+
 # Filler
 
-1. Description
-2. Features & Roadmap
-3. Installation
-4. Commands
-5. Folder structure
-6. Template system
-7. Snippet system
-8. Blog system
-9. Contribute
-10. License
+Static web sites made easy.
 
-## Static web sites made easy.
+**Table of content**
+
+- [Filler](#filler)
+  - [Objective](#objective)
+  - [Features and Roadmap](#features-and-roadmap)
+- [Installation](#installation)
+  - [Commands](#commands)
+  - [Folder structure](#folder-structure)
+  - [Template system](#template-system)
+  - [Snippet system](#snippet-system)
+  - [Blog system](#blog-system)
+- [Contribute](#contribute)
+- [License](#license)
+
+## Objective
 
 Filler is a tool to create a static website using templates, reusing code and saving time. Its main purpose is to be as simple as possible to use.
 
-## Features & Roadmap
+## Features and Roadmap
 
 - [x] Uses generic file types only. [v0.1.0]
 - [x] Template system. [v0.1.0]
@@ -23,19 +31,26 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [x] Progressive builds (it only builds files that have changed, but you can `--force` it). [v0.1.0]
 - [x] CSS minification. [v0.1.0]
 - [x] Blog post, recent posts and archive. [v0.1.0]
-- [ ] Markdown support.
+- [x] Markdown support.
+- [ ] Improve logging system.
+- [ ] Improve error system.
+- [ ] Serve project: build in memory and watch for file changes.
+- [ ] Support saving into cloud storage (AWS S3, Google Cloud Storage...).
+- [ ] Example templates.
+- [ ] "init" command.
+- [ ] Multilingual sites.
 - [ ] Webpack support.
 - [ ] React support.
-- [ ] Serve project (build in memory and watch for file changes).
 - [ ] Server Side Rendering.
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
 
-## Installation
+# Installation
 
-Install node [[Download link](https://nodejs.org/en/download/)] [Tested version 12.12]
+Install node [[Download link](https://nodejs.org/en/download/)][tested version 12.12]
 
 Install filler:
+
 ```
 git clone https://github.com/pirobtumen/filler.git
 cd filler
@@ -47,11 +62,12 @@ node filler --help
 ## Commands
 
 - build \<folder\> [OPTIONS]
+
   - folder: project folder path. E.g.: "~/Projects/myweb".
-  - --force: force build all files.
-  - --mode [dev, prod]: build mode. Replace specifi snippets.
-  - --recentPosts [number]: number of recent posts rendered.
-  
+  - --output: output folder path. Default: ./dist
+  - --force: force build all files. Default: false
+  - --mode [dev, prod]: build mode. Replace specific snippets. Default: dev
+  - --recentPosts [number]: number of recent posts rendered. Default: 5
 
 ## Folder structure
 
@@ -74,13 +90,14 @@ Create the following file structure:
     - /styles
       - styles.css
 ```
+
 Build command for development:
 
 `node filler ~/Projects/myweb`
 
 Build command for production (injects analytics):
 
-`node filler ~/Projects/myweb`
+`node filler ~/Projects/myweb --mode prod`
 
 The output folder will contain:
 
@@ -98,7 +115,7 @@ The output folder will contain:
 
 ## Template system
 
-The files inside the public folder can use any template created inside the `/templates` folder. The idea is to set the property `@template <template filename>` inside a comment in the top part  of the file. Let's see an example:
+The files inside the public folder can use any template created inside the `/templates` folder. The idea is to set the property `@template <template filename>` inside a comment in the top part of the file. Let's see an example:
 
 ```
 File: ./public/index.html
@@ -108,6 +125,7 @@ File: ./public/index.html
 
 I'm the main web page!!
 ```
+
 ```
 File: ./templates/main.html
 <div>
@@ -127,6 +145,7 @@ I'm the main web page!!
 ## Snippet system
 
 Currently there are only two supported snippets:
+
 - /snippets/scripts.html: replaced in every mode.
 - /snippets/analytics.html: replaced only in `prod` mod.
 
@@ -156,7 +175,7 @@ I'm the main web page!!
 
 ## Blog system
 
-The files inside the `/post` folder can use any template created inside the `/templates` folder. The idea is to set the parameter `@template <template filename>` inside a comment in the top part  of the file. It will also have some extra properties: `@title`, `@description`, `@author` and `@date (dd-mm-yyyyy)`. These properties are used to build the `{{blog:recent-post}}` and `{{blog:archive}}`.
+The files inside the `/post` folder can use any template created inside the `/templates` folder. The idea is to set the parameter `@template <template filename>` inside a comment in the top part of the file. It will also have some extra properties: `@title`, `@description`, `@author` and `@date (dd-mm-yyyyy)`. These properties are used to build the `{{blog:recent-post}}` and `{{blog:archive}}`.
 
 ```
 File: ./post/my-first-post.html
@@ -171,9 +190,9 @@ File: ./post/my-first-post.html
 My firs blog post content
 ```
 
-If you want to use `{{blog:recent-posts}}` or `{{blog:archive}}`, you need to create the `/template/recentPost.html` or `template/archivePost.html` template in  order to render them. For example:
+If you want to use `{{blog:recent-posts}}` or `{{blog:archive}}`, you need to create the `/template/recentPost.html` or `template/archivePost.html` template in order to render them. For example:
 
-Then you can insert the markups `{{blog:recent-posts}}`  or `{{blog:archive}}` where you want, for example in the main page:
+Then you can insert the markups `{{blog:recent-posts}}` or `{{blog:archive}}` where you want, for example in the main page:
 
 ```
 Result: ./dist/index.html
@@ -186,13 +205,13 @@ I'm the main web page!!
 
 You can control the number of recent post displayed with the `build --recentPosts <number>` argument.
 
-## Contribute
+# Contribute
 
 Feel free to:
 
 - Submit bugs/features.
 - Open a Pull Request with some fix/feature.
 
-## License
+# License
 
 Filler is distributed under BSD 3-Clause license. Check the LICENSE.md file.

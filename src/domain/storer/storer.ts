@@ -1,23 +1,21 @@
-import { writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 
+import { ICache, IFile } from "../../interfaces";
 import { DirScanner } from "../../lib/dir-scanner";
 import { mkdir, unlink } from "../../lib/io";
-import { IFile, IStore } from "../../interfaces";
-import { Builder } from "../builder";
+import { writeFileSync } from "fs";
 
-export class Filler {
-  private store: IStore;
-  private builder: Builder;
+export class Storer {
+  private cache: ICache;
 
-  constructor(store: IStore, builder: Builder) {
-    this.store = store;
-    this.builder = builder;
+  constructor(cache: ICache) {
+    this.cache = cache;
   }
 
   private async saveFile(file: IFile) {
-    const config = this.store.get("config");
+    const config = this.cache.get("config");
     const outFolder = join(config.distFolder, file.path);
+
     try {
       await mkdir(outFolder, { recursive: true });
     } catch (e) {
@@ -35,35 +33,24 @@ export class Filler {
     writeFileSync(outFilePath, content);
   }
 
-  public async build() {
-    const config = this.store.get("config");
-    const publicFolder = join(config.projectFolder, config.publicFolder);
+  public async save(files: Array<IFile>) {
+    const config = this.cache.get("config");
     let filesUpdated = 0;
-
-    const posts = this.store.get("posts").map((p: IFile) => ({
-      ...p,
-      path: config.postsFolder
-    }));
 
     await mkdir(config.distFolder, { recursive: true });
     const distFiles = await DirScanner.scanAndGetFiles(config.distFolder);
-    const publicFiles = [
-      ...(await DirScanner.scanAndGetFiles(publicFolder)),
-      ...posts
-    ];
 
-    for (const pf of publicFiles) {
+    for (const f of files) {
       const distFileIndex = distFiles.findIndex(
-        df => df.name === pf.name && df.path === pf.path
+        df => df.name === f.name && df.path === f.path
       );
 
       if (
         distFileIndex === -1 ||
-        pf.modifiedAt > distFiles[distFileIndex].modifiedAt ||
+        f.modifiedAt > distFiles[distFileIndex].modifiedAt ||
         config.force
       ) {
-        const file = await this.builder.buildFile(pf);
-        this.saveFile(file);
+        this.saveFile(f);
         filesUpdated += 1;
       }
 

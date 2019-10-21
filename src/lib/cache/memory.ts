@@ -1,6 +1,6 @@
-import { IStore } from "../../interfaces";
+import { ICache } from "../../interfaces";
 
-export class Store implements IStore {
+export class MemoryCache implements ICache {
   private data: { [key: string]: any } = {};
 
   public set(key: string, value: any) {

@@ -1,10 +1,10 @@
-import { IBuilder, IFile, IStore, IPostMetadata } from "../../../interfaces";
+import { IBuilder, IFile, ICache, IPostMetadata } from "../../../interfaces";
 import { getFileMetadata } from "../../builder";
 
-export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
-  const config = store.get("config");
-  const templates = store.get("templates");
-  const snippets = store.get("snippets");
+export const htmlBuilder: IBuilder = async (cache: ICache, file: IFile) => {
+  const config = cache.get("config");
+  const templates = cache.get("templates");
+  const snippets = cache.get("snippets");
 
   const newFile = { ...file };
   const { metadata, html: content } = getFileMetadata(newFile);
@@ -23,12 +23,12 @@ export const htmlBuilder: IBuilder = async (store: IStore, file: IFile) => {
 
   const recentPosts = output.match(/{{blog:recent-posts}}/g);
   if (recentPosts) {
-    output = output.replace("{{blog:recent-posts}}", buildRecentPosts(store));
+    output = output.replace("{{blog:recent-posts}}", buildRecentPosts(cache));
   }
 
   const archive = output.match(/{{blog:archive}}/g);
   if (archive) {
-    output = output.replace("{{blog:archive}}", buildArchive(store));
+    output = output.replace("{{blog:archive}}", buildArchive(cache));
   }
 
   const templateSnippets = output.match(/{{snippet:([a-z0-9-]*)}}/g);
@@ -83,10 +83,10 @@ const sortPosts = (p1: IPostMetadata, p2: IPostMetadata) => {
   else return 1;
 };
 
-const buildRecentPosts = (store: IStore) => {
-  const config = store.get("config");
-  const posts = store.get("posts");
-  const { recentPost: recentPostTemplate } = store.get("templates");
+const buildRecentPosts = (cache: ICache) => {
+  const config = cache.get("config");
+  const posts = cache.get("posts");
+  const { recentPost: recentPostTemplate } = cache.get("templates");
 
   if (!recentPostTemplate) {
     throw new Error("There is no template for recent posts.");
@@ -100,9 +100,9 @@ const buildRecentPosts = (store: IStore) => {
     .join("");
 };
 
-const buildArchive = (store: IStore) => {
-  const posts = store.get("posts");
-  const { archivePost: archiveTemplate } = store.get("templates");
+const buildArchive = (cache: ICache) => {
+  const posts = cache.get("posts");
+  const { archivePost: archiveTemplate } = cache.get("templates");
 
   if (!archiveTemplate) {
     throw new Error("There is no template for archive.");

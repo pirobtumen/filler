@@ -1,13 +1,13 @@
 jest.mock("uglifycss");
 import { processString } from "uglifycss";
 
-import { Store } from "../../src/lib/store";
+import { MemoryCache } from "../../src/lib/cache";
 import { IFile } from "../../src/interfaces";
 import { cssBuilder } from "../../src/domain/builder/builders";
 
 describe("Builder - CSS", () => {
   test("Uglify css", async () => {
-    const store = new Store();
+    const cache = new MemoryCache();
     const fakeFile: IFile = {
       name: "style.css",
       extension: "css",
@@ -16,7 +16,7 @@ describe("Builder - CSS", () => {
       raw: "hello { fake-css: 1234; }"
     };
 
-    const output = await cssBuilder(store, fakeFile);
+    await cssBuilder(cache, fakeFile);
     expect(processString).toHaveBeenCalled();
   });
 });

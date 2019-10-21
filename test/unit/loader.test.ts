@@ -1,14 +1,14 @@
-import { Loader } from "../../src/domain/filler";
-import { Store } from "../../src/lib/store";
-import { IStore, IConfig, IFile } from "../../src/interfaces";
+import { Loader } from "../../src/domain/loader";
+import { MemoryCache } from "../../src/lib/cache";
+import { ICache, IConfig, IFile } from "../../src/interfaces";
 import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 describe("Loader", () => {
-  let store: IStore;
+  let cache: ICache;
 
   beforeEach(() => {
-    store = new Store();
-    store.set("config", {
+    cache = new MemoryCache();
+    cache.set("config", {
       ...defaultConfig,
       projectFolder: "./test/data/project",
       distFolder: "./test/dist"
@@ -16,49 +16,49 @@ describe("Loader", () => {
   });
 
   test("Folder doesn't exist", async () => {
-    store.set("config", {
-      ...store.get("config"),
+    cache.set("config", {
+      ...cache.get("config"),
       projectFolder: "./test/data/empty-project"
     } as IConfig);
 
-    const loader = new Loader(store);
+    const loader = new Loader(cache);
     await loader.init();
 
-    expect(store.get("templates")).toEqual({});
-    expect(store.get("snippets")).toEqual({});
-    expect(store.get("posts")).toEqual([]);
+    expect(cache.get("templates")).toEqual({});
+    expect(cache.get("snippets")).toEqual({});
+    expect(cache.get("posts")).toEqual([]);
   });
 
   test("Folder is empty", async () => {
-    store.set("config", {
-      ...store.get("config"),
+    cache.set("config", {
+      ...cache.get("config"),
       projectFolder: "./test/data/empty-project"
     } as IConfig);
 
-    const loader = new Loader(store);
+    const loader = new Loader(cache);
     await loader.init();
 
-    expect(store.get("templates")).toEqual({});
-    expect(store.get("snippets")).toEqual({});
-    expect(store.get("posts")).toEqual([]);
+    expect(cache.get("templates")).toEqual({});
+    expect(cache.get("snippets")).toEqual({});
+    expect(cache.get("posts")).toEqual([]);
   });
 
   test("Folder is correct", async () => {
-    store.set("config", {
-      ...store.get("config"),
+    cache.set("config", {
+      ...cache.get("config"),
       projectFolder: "./test/data/project"
     } as IConfig);
 
-    const loader = new Loader(store);
+    const loader = new Loader(cache);
     await loader.init();
 
-    expect(Object.keys(store.get("templates"))).toMatchObject(["main"]);
-    expect(Object.keys(store.get("snippets"))).toEqual([
+    expect(Object.keys(cache.get("templates"))).toMatchObject(["main"]);
+    expect(Object.keys(cache.get("snippets"))).toEqual([
       "analytics",
       "scripts"
     ]);
     expect(
-      store
+      cache
         .get("posts")
         .every(
           (p: IFile) =>
