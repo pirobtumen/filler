@@ -1,11 +1,9 @@
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.ts'],
   verbose: true,
-  roots: [
-    "<rootDir>/test"
-  ],
+  collectCoverageFrom: ['src/**/*.ts'],
   transform: {
-    "^.+\\.ts$": "ts-jest"
+    "^.+\\.tsx?$": "ts-jest",
   },
+  testRegex: "(./tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
 }
