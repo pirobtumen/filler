@@ -11,6 +11,8 @@ before_install:
   - npm update
 install:
   - npm ci
-script:
-  - npm run build
+test:
   - npm run test
+  - npm run coveralls
+build:
+  - npm run build
