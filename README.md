@@ -47,7 +47,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 
 # Installation
 
-Install node [[Download link](https://nodejs.org/en/download/)][tested version 12.12]
+Install node 12.13 LTS [[Download link](https://nodejs.org/en/download/)]. You can also use nvm or any other node version manager.
 
 Install filler:
 
