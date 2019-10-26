@@ -142,7 +142,7 @@ describe("Builder - HTML", () => {
 
   test("Recent posts", async () => {
     const cache = new MemoryCache();
-    cache.set("config", { recentPosts: 2 });
+    cache.set("config", { recentPosts: 2, postsFolder: "posts" });
     cache.set("templates", {
       main: "<div>{{content}}</div>",
       recentPost:
@@ -165,8 +165,8 @@ describe("Builder - HTML", () => {
     };
 
     const posts = [
-      '<div href="/some/fourth.html"><p>Fourth post</p><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p></div>',
-      '<div href="/some/third.html"><p>Third post</p><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div>'
+      '<div href="posts/some/fourth.html"><p>Fourth post</p><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p></div>',
+      '<div href="posts/some/third.html"><p>Third post</p><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div>'
     ];
 
     const result: IFile = {
@@ -180,7 +180,7 @@ describe("Builder - HTML", () => {
 
   test("Recent posts - use partial metadata", async () => {
     const cache = new MemoryCache();
-    cache.set("config", { recentPosts: 2 });
+    cache.set("config", { recentPosts: 2, postsFolder: "posts" });
     cache.set("templates", {
       main: "<div>{{content}}</div>",
       recentPost: "<div>{{title}}</div><p>{{author}}</p>"
@@ -230,6 +230,7 @@ describe("Builder - HTML", () => {
 
   test("Archive", async () => {
     const cache = new MemoryCache();
+    cache.set("config", { postsFolder: "posts" });
     cache.set("templates", {
       main: "<div>{{content}}</div>",
       archivePost: "<div>{{title}}</div><p>{{date}}</p>"

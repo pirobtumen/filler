@@ -4,7 +4,7 @@ export const defaultConfig: IConfig = {
   templateFolder: "templates",
   postsFolder: "posts",
   publicFolder: "public",
-  distFolder: "./dist",
+  distFolder: "dist",
   snippetsFolder: "snippets",
   projectFolder: "",
   force: false,

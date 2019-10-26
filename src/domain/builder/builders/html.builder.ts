@@ -1,4 +1,10 @@
-import { IBuilder, IFile, ICache, IPostMetadata } from "../../../interfaces";
+import {
+  IBuilder,
+  IFile,
+  ICache,
+  IPostMetadata,
+  IConfig
+} from "../../../interfaces";
 import { getFileMetadata } from "../../builder";
 import { join } from "path";
 
@@ -51,7 +57,7 @@ export const htmlBuilder: IBuilder = async (cache: ICache, file: IFile) => {
   return newFile;
 };
 
-const getPostMetadata = (post: IFile) => {
+const getPostMetadata = (config: IConfig, post: IFile) => {
   const { metadata } = getFileMetadata(post);
   // TODO validation
   const [day, month, year] = metadata.date!.split("-").map(d => parseInt(d));
@@ -62,7 +68,7 @@ const getPostMetadata = (post: IFile) => {
     author: metadata.author!,
     date: metadata.date!,
     createdAt: new Date(year, month - 1, day, 0, 0, 0, 0),
-    href: join(post.path, post.name)
+    href: join(config.postsFolder, post.path, post.name)
   };
 
   return postMedata;
@@ -96,7 +102,7 @@ const buildRecentPosts = (cache: ICache) => {
   }
 
   return posts
-    .map((post: IFile) => getPostMetadata(post))
+    .map((post: IFile) => getPostMetadata(config, post))
     .sort(sortPosts)
     .slice(0, config.recentPosts)
     .map((pm: IPostMetadata) => fillPostMetadata(recentPostTemplate, pm))
@@ -104,6 +110,7 @@ const buildRecentPosts = (cache: ICache) => {
 };
 
 const buildArchive = (cache: ICache) => {
+  const config = cache.get("config");
   const posts = cache.get("posts");
   const { archivePost: archiveTemplate } = cache.get("templates");
 
@@ -112,7 +119,7 @@ const buildArchive = (cache: ICache) => {
   }
 
   return posts
-    .map((post: IFile) => getPostMetadata(post))
+    .map((post: IFile) => getPostMetadata(config, post))
     .sort(sortPosts)
     .map((pm: IPostMetadata) => fillPostMetadata(archiveTemplate, pm))
     .join("");
