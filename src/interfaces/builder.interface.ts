@@ -21,4 +21,5 @@ export interface IPostMetadata {
   author: string;
   date: string;
   createdAt: Date;
+  href: string;
 }

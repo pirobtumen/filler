@@ -140,17 +140,19 @@ describe("Builder - HTML", () => {
     );
   });
 
-  test("Recent posts", async () => {
+  test.only("Recent posts", async () => {
     const cache = new MemoryCache();
     cache.set("config", { recentPosts: 2 });
     cache.set("templates", {
       main: "<div>{{content}}</div>",
       recentPost:
-        "<div>{{title}}</div><p>{{author}}</p><p>{{description}}</p><p>{{date}}</p>"
+        '<div href="{{href}}"><p>{{title}}</p><p>{{author}}</p><p>{{description}}</p><p>{{date}}</p></div>'
     });
     cache.set(
       "posts",
-      await DirScanner.scanAndGetFiles("./test/data/project/posts")
+      (await DirScanner.scanAndGetFiles("./test/data/project/posts")).map(
+        f => ({ ...f, path: "/some" })
+      )
     );
 
     const fakeFile: IFile = {
@@ -158,13 +160,18 @@ describe("Builder - HTML", () => {
       extension: "html",
       modifiedAt: new Date(),
       path: "",
-      raw: "<!--\n @template main \n--> <div>{{blog:recent-posts}}</div>"
+      raw:
+        '<!--\n @template main \n--> <div class="recent-posts">{{blog:recent-posts}}</div>'
     };
+
+    const posts = [
+      '<div href="/some/fourth.html"><p>Fourth post</p><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p></div>',
+      '<div href="/some/third.html"><p>Third post</p><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div>'
+    ];
 
     const result: IFile = {
       ...fakeFile,
-      raw:
-        "<div> <div><div>Fourth post</div><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p><div>Third post</div><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div></div>"
+      raw: `<div> <div class="recent-posts">${posts.join("")}</div></div>`
     };
 
     const output = await htmlBuilder(cache, fakeFile);

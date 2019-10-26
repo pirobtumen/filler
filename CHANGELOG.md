@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - Unreleased
 
+## Added
+
+- Recent posts "Read more" link.
+
+## Changed
+
+- Updated node to 12.13 LTS.
+
+## Fixed
+
+- Post metada regex now supports special characters.
+
 ## [0.2.0] - 21-10-2019
 
 ### Added

@@ -1,5 +1,6 @@
 import { IBuilder, IFile, ICache, IPostMetadata } from "../../../interfaces";
 import { getFileMetadata } from "../../builder";
+import { join } from "path";
 
 export const htmlBuilder: IBuilder = async (cache: ICache, file: IFile) => {
   const config = cache.get("config");
@@ -60,7 +61,8 @@ const getPostMetadata = (post: IFile) => {
     description: metadata.description!,
     author: metadata.author!,
     date: metadata.date!,
-    createdAt: new Date(year, month - 1, day, 0, 0, 0, 0)
+    createdAt: new Date(year, month - 1, day, 0, 0, 0, 0),
+    href: join(post.path, post.name)
   };
 
   return postMedata;
@@ -71,7 +73,8 @@ const fillPostMetadata = (template: string, postMetadata: IPostMetadata) => {
     .replace("{{title}}", postMetadata.title)
     .replace("{{author}}", postMetadata.author)
     .replace("{{date}}", postMetadata.date)
-    .replace("{{description}}", postMetadata.description);
+    .replace("{{description}}", postMetadata.description)
+    .replace("{{href}}", postMetadata.href);
 };
 
 const sortPosts = (p1: IPostMetadata, p2: IPostMetadata) => {
