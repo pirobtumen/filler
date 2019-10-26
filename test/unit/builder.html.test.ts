@@ -140,7 +140,7 @@ describe("Builder - HTML", () => {
     );
   });
 
-  test.only("Recent posts", async () => {
+  test("Recent posts", async () => {
     const cache = new MemoryCache();
     cache.set("config", { recentPosts: 2 });
     cache.set("templates", {

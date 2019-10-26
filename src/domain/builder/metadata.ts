@@ -10,7 +10,7 @@ export function getFileMetadata(file: IFile) {
   if (startIndex > -1 && endIndex > -1 && endIndex > startIndex) {
     const endPos = endIndex + 3;
     const metadataRaw = fileRaw.substr(0, endPos);
-    const metadataRegex = /@(\w+) ([\w,\- \.;]+)/gm;
+    const metadataRegex = /@(\w+) (.+\n)/gm;
 
     let match = metadataRegex.exec(metadataRaw);
     while (match) {
