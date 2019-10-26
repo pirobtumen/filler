@@ -12,7 +12,7 @@ export class Storer {
     this.cache = cache;
   }
 
-  private async saveFile(file: IFile) {
+  public async saveFile(file: IFile) {
     const config = this.cache.get("config");
     const outFolder = join(config.distFolder, file.path);
 

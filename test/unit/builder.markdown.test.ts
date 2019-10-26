@@ -15,6 +15,10 @@ jest.mock("marked", () => ({
 const mockedMarked = marked as jest.Mocked<typeof marked>;
 
 describe("Builder - Markdown", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("parseMarkdown and htmlBuilder are called", async () => {
     const cache = new MemoryCache();
     const fakeFile: IFile = {

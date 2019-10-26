@@ -10,8 +10,10 @@ Static web sites made easy.
 - [Filler](#filler)
   - [Objective](#objective)
   - [Features and Roadmap](#features-and-roadmap)
-- [Installation](#installation)
+- [Usage](#usage)
+  - [Installation](#installation)
   - [Commands](#commands)
+- [Documentation](#documentation)
   - [Folder structure](#folder-structure)
   - [Template system](#template-system)
   - [Snippet system](#snippet-system)
@@ -45,7 +47,9 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
 
-# Installation
+# Usage
+
+## Installation
 
 Install node 12.13 LTS [[Download link](https://nodejs.org/en/download/)]. You can also use nvm or any other node version manager.
 
@@ -68,6 +72,8 @@ node filler --help
   - --force: force build all files. Default: false
   - --mode [dev, prod]: build mode. Replace specific snippets. Default: dev
   - --recentPosts [number]: number of recent posts rendered. Default: 5
+
+# Documentation
 
 ## Folder structure
 
