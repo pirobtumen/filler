@@ -1,15 +1,17 @@
 import { IBuilder, IFile, ICache } from "../../interfaces";
-import { cssBuilder, htmlBuilder, markdownBuilder } from "./builders";
+import { buildCss, buildHtml, markdownBuilder } from "./filetype";
 import { join } from "path";
 import { DirScanner } from "../../lib/dir-scanner";
+import { getPostMetadata } from "./parser";
+import { fillPostMetadata } from "./blog";
 
 export interface IBuilders {
   [key: string]: IBuilder;
 }
 
 export const defaultBuilders = {
-  html: htmlBuilder,
-  css: cssBuilder,
+  html: buildHtml,
+  css: buildCss,
   md: markdownBuilder
 };
 
@@ -31,10 +33,16 @@ export class Builder {
   public async build() {
     const config = this.cache.get("config");
     const publicFolder = join(config.projectFolder, config.publicFolder);
-    const posts = this.cache.get("posts").map((p: IFile) => ({
-      ...p,
-      path: config.postsFolder
-    }));
+    const posts = this.cache.get("posts").map(
+      (p: IFile): IFile => {
+        const postMetadata = getPostMetadata(config, p);
+        return {
+          ...p,
+          raw: fillPostMetadata(p.raw.toString(), postMetadata),
+          path: config.postsFolder
+        };
+      }
+    );
 
     const publicFiles = await Promise.all(
       [...(await DirScanner.scanAndGetFiles(publicFolder)), ...posts].map(pf =>

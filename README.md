@@ -10,6 +10,7 @@ Static web sites made easy.
 - [Filler](#filler)
   - [Objective](#objective)
   - [Features and Roadmap](#features-and-roadmap)
+  - [Examples](#examples)
 - [Usage](#usage)
   - [Installation](#installation)
   - [Commands](#commands)
@@ -36,6 +37,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [x] Markdown support.
 - [ ] Improve logging system.
 - [ ] Improve error system.
+- [ ] Docs and GitHub pages.
 - [ ] Serve project: build in memory and watch for file changes.
 - [ ] Support saving into cloud storage (AWS S3, Google Cloud Storage...).
 - [ ] Example templates.
@@ -46,6 +48,10 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [ ] Server Side Rendering.
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
+
+## Examples
+
+- [www.pirobits.com](https://www.pirobits.com) - [Source: GitHub](https://github.com/pirobtumen/pirobits.com)
 
 # Usage
 
@@ -230,6 +236,25 @@ I'm the main web page!!
 ```
 
 You can control the number of recent post displayed with the `build --recentPosts <number>` argument.
+
+Inside the recent posts or archive templates, the post properties can be injected and will replace the template markups:
+
+- {{title}}: Post title (@title)
+- {{description}}: Post description (@description)
+- {{author}}: Post author (@author)
+- {{date}}: Post date (@date)
+- {{href}}: Post link href
+
+Some examples:
+
+```
+File: ./template/recentPost.html
+<div>
+  <h1>{{title}} - {{date}}</h1>
+  <p>{{description}}</p>
+  <a href="{{href}}">Read more</a>
+</div>
+```
 
 # Contribute
 

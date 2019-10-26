@@ -1,6 +1,6 @@
 import { MemoryCache } from "../../src/lib/cache";
 import { IFile } from "../../src/interfaces";
-import { htmlBuilder } from "../../src/domain/builder/builders";
+import { buildHtml } from "../../src/domain/builder";
 import { DirScanner } from "../../src/lib/dir-scanner";
 
 describe("Builder - HTML", () => {
@@ -19,7 +19,7 @@ describe("Builder - HTML", () => {
       raw: " <p>test</p>"
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 
@@ -34,7 +34,7 @@ describe("Builder - HTML", () => {
       raw: "<!--\n @template main \n--> <p>test</p>"
     };
 
-    return expect(htmlBuilder(cache, fakeFile)).rejects.toEqual(
+    return expect(buildHtml(cache, fakeFile)).rejects.toEqual(
       new Error("Template main not found.")
     );
   });
@@ -58,7 +58,7 @@ describe("Builder - HTML", () => {
       raw: "<div> <p>test</p></div>"
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 
@@ -86,7 +86,7 @@ describe("Builder - HTML", () => {
       raw: "<div>ABCD <p>XYZA</p></div>"
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 
@@ -115,7 +115,7 @@ describe("Builder - HTML", () => {
       raw: "<div>ABCD <p></p>always</div>"
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 
@@ -135,7 +135,7 @@ describe("Builder - HTML", () => {
       raw: "<!--\n @template main \n--> <div>{{blog:recent-posts}}</div>"
     };
 
-    return expect(htmlBuilder(cache, fakeFile)).rejects.toThrow(
+    return expect(buildHtml(cache, fakeFile)).rejects.toThrow(
       new Error("There is no template for recent posts.")
     );
   });
@@ -174,7 +174,7 @@ describe("Builder - HTML", () => {
       raw: `<div> <div class="recent-posts">${posts.join("")}</div></div>`
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 
@@ -204,7 +204,7 @@ describe("Builder - HTML", () => {
         "<div> <div><div>Fourth post</div><p>Test</p><div>Third post</div><p>Test</p></div></div>"
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 
@@ -223,7 +223,7 @@ describe("Builder - HTML", () => {
       raw: "<!--\n @template main \n--> <div>{{blog:archive}}</div>"
     };
 
-    return expect(htmlBuilder(cache, fakeFile)).rejects.toThrow(
+    return expect(buildHtml(cache, fakeFile)).rejects.toThrow(
       new Error("There is no template for archive.")
     );
   });
@@ -254,7 +254,7 @@ describe("Builder - HTML", () => {
         "<div> <div><div>Fourth post</div><p>04-01-2019</p><div>Third post</div><p>03-01-2019</p><div>Second post</div><p>02-01-2019</p><div>First post</div><p>01-01-2019</p></div></div>"
     };
 
-    const output = await htmlBuilder(cache, fakeFile);
+    const output = await buildHtml(cache, fakeFile);
     expect(output).toMatchObject(result);
   });
 });

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 
 - Recent posts "Read more" link.
+- Replace post metadata inside post.
 
 ## Changed
 

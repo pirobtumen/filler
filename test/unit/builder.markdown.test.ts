@@ -1,11 +1,10 @@
 import marked from "marked";
-import { htmlBuilder } from "../../src/domain/builder/builders/html.builder";
 
 import { MemoryCache } from "../../src/lib/cache";
 import { IFile } from "../../src/interfaces";
-import { markdownBuilder } from "../../src/domain/builder/builders/markdown.builder";
+import { buildHtml, markdownBuilder } from "../../src/domain/builder";
 
-jest.mock("../../src/domain/builder/builders/html.builder.ts");
+jest.mock("../../src/domain/builder/filetype/html.builder.ts");
 jest.mock("marked", () => ({
   parse: jest.fn((markdown: string, callback: any) =>
     callback(null, "html-output")
@@ -34,7 +33,7 @@ describe("Builder - Markdown", () => {
       fakeFile.raw,
       expect.any(Function)
     );
-    expect(htmlBuilder).toHaveBeenCalledWith(cache, {
+    expect(buildHtml).toHaveBeenCalledWith(cache, {
       ...fakeFile,
       raw: "html-output"
     });

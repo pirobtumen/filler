@@ -1,7 +1,7 @@
 import { parse } from "marked";
 
 import { IBuilder, IFile, ICache } from "../../../interfaces";
-import { htmlBuilder } from "./html.builder";
+import { buildHtml } from "./html.builder";
 
 const parseMarkdown = async (markdown: string) => {
   return new Promise<string>((resolve, rejects) => {
@@ -19,5 +19,5 @@ export const markdownBuilder: IBuilder = async (cache: ICache, file: IFile) => {
     raw: await parseMarkdown(file.raw.toString())
   };
 
-  return htmlBuilder(cache, newFile);
+  return buildHtml(cache, newFile);
 };

@@ -3,7 +3,7 @@ import { processString } from "uglifycss";
 
 import { MemoryCache } from "../../src/lib/cache";
 import { IFile } from "../../src/interfaces";
-import { cssBuilder } from "../../src/domain/builder/builders";
+import { buildCss } from "../../src/domain/builder";
 
 describe("Builder - CSS", () => {
   test("Uglify css", async () => {
@@ -16,7 +16,7 @@ describe("Builder - CSS", () => {
       raw: "hello { fake-css: 1234; }"
     };
 
-    await cssBuilder(cache, fakeFile);
+    await buildCss(cache, fakeFile);
     expect(processString).toHaveBeenCalled();
   });
 });

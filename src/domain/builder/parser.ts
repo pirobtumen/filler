@@ -1,4 +1,5 @@
-import { IFileMetadata, IFile } from "../../interfaces";
+import { IFileMetadata, IFile, IConfig, IPostMetadata } from "../../interfaces";
+import { join } from "path";
 
 export function getFileMetadata(file: IFile) {
   const fileRaw = file.raw.toString();
@@ -27,3 +28,20 @@ export function getFileMetadata(file: IFile) {
 
   return { metadata, html };
 }
+
+export const getPostMetadata = (config: IConfig, post: IFile) => {
+  const { metadata } = getFileMetadata(post);
+  // TODO validation
+  const [day, month, year] = metadata.date!.split("-").map(d => parseInt(d));
+
+  const postMedata: IPostMetadata = {
+    title: metadata.title!,
+    description: metadata.description!,
+    author: metadata.author!,
+    date: metadata.date!,
+    createdAt: new Date(year, month - 1, day, 0, 0, 0, 0),
+    href: `${join(config.postsFolder, post.path, post.name)}.html`
+  };
+
+  return postMedata;
+};
