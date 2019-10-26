@@ -28,7 +28,7 @@ export class Storer {
       console.log(`WARNING: Empty file ${file.path} `);
     }
 
-    const outFilePath = join(outFolder, file.name);
+    const outFilePath = `${join(outFolder, file.name)}.${file.extension}`;
     console.log(`+ ${outFilePath}`);
     writeFileSync(outFilePath, content);
   }

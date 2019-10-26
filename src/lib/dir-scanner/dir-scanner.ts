@@ -44,13 +44,23 @@ export class DirScanner {
       );
 
       for (const f of folderFiles) {
+        let extension: string, filename: string;
         const filePath = join(folder, f.name);
         const inPath = join(this.rootFolder, filePath);
         const raw = readFileSync(inPath);
         const metadata = statSync(inPath);
+        const filenameSplit = f.name.split(".");
+        if (filenameSplit.length > 1) {
+          extension = filenameSplit.pop()!;
+          filename = filenameSplit.join(".");
+        } else {
+          extension = "";
+          filename = filenameSplit[0];
+        }
+
         const file: IFile = {
-          name: f.name,
-          extension: f.name.split(".")[1],
+          name: filename,
+          extension: extension,
           path: folder,
           modifiedAt: metadata.mtime,
           raw

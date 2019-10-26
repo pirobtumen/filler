@@ -68,7 +68,7 @@ const getPostMetadata = (config: IConfig, post: IFile) => {
     author: metadata.author!,
     date: metadata.date!,
     createdAt: new Date(year, month - 1, day, 0, 0, 0, 0),
-    href: join(config.postsFolder, post.path, post.name)
+    href: `${join(config.postsFolder, post.path, post.name)}.html`
   };
 
   return postMedata;

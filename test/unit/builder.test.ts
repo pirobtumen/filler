@@ -6,7 +6,7 @@ describe("Builder", () => {
   test("Build file calls registered builder", async () => {
     const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "test.html",
+      name: "test",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -29,7 +29,7 @@ describe("Builder", () => {
   test("Build file calls unregistered builder", async () => {
     const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "test.css",
+      name: "test",
       extension: "css",
       modifiedAt: new Date(),
       path: "",

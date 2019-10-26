@@ -18,7 +18,7 @@ describe("Builder - Markdown", () => {
   test("parseMarkdown and htmlBuilder are called", async () => {
     const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -44,7 +44,7 @@ describe("Builder - Markdown", () => {
     );
     const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",

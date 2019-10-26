@@ -62,9 +62,7 @@ describe("Loader", () => {
         .get("posts")
         .every(
           (p: IFile) =>
-            ["first.html", "second.html", "third.html", "fourth.html"].indexOf(
-              p.name
-            ) > -1
+            ["first", "second", "third", "fourth"].indexOf(p.name) > -1
         )
     ).toBeTruthy();
   });

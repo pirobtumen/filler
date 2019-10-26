@@ -7,7 +7,7 @@ describe("Builder - HTML", () => {
   test("Builds file without template", async () => {
     const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -27,7 +27,7 @@ describe("Builder - HTML", () => {
     const cache = new MemoryCache();
     cache.set("templates", {});
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -46,7 +46,7 @@ describe("Builder - HTML", () => {
     });
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -74,7 +74,7 @@ describe("Builder - HTML", () => {
     });
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -103,7 +103,7 @@ describe("Builder - HTML", () => {
     });
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -128,7 +128,7 @@ describe("Builder - HTML", () => {
     cache.set("posts", DirScanner.scanAndGetFiles("./test/data/project/posts"));
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -156,7 +156,7 @@ describe("Builder - HTML", () => {
     );
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -191,7 +191,7 @@ describe("Builder - HTML", () => {
     );
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -216,7 +216,7 @@ describe("Builder - HTML", () => {
     cache.set("posts", DirScanner.scanAndGetFiles("./test/data/project/posts"));
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -241,7 +241,7 @@ describe("Builder - HTML", () => {
     );
 
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",

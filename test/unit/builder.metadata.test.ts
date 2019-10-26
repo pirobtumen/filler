@@ -4,7 +4,7 @@ import { IFile } from "../../src/interfaces";
 describe("Builder - Metadata", () => {
   test("Parse template file", () => {
     const file: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -29,7 +29,7 @@ describe("Builder - Metadata", () => {
 
   test("Parse template file (multi line spaces)", () => {
     const file: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -52,7 +52,7 @@ describe("Builder - Metadata", () => {
 
   test("Parse template file (error not started)", () => {
     const file: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -69,7 +69,7 @@ describe("Builder - Metadata", () => {
 
   test("Parse template file (error not ended)", () => {
     const file: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -86,7 +86,7 @@ describe("Builder - Metadata", () => {
 
   test("Parse template file (error reversed)", () => {
     const file: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",

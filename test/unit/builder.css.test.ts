@@ -9,7 +9,7 @@ describe("Builder - CSS", () => {
   test("Uglify css", async () => {
     const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "style.css",
+      name: "style",
       extension: "css",
       modifiedAt: new Date(),
       path: "",
