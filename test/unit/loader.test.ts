@@ -52,11 +52,30 @@ describe("Loader", () => {
     const loader = new Loader(cache);
     await loader.init();
 
-    expect(Object.keys(cache.get("templates"))).toMatchObject(["main"]);
-    expect(Object.keys(cache.get("snippets"))).toEqual([
-      "analytics",
-      "scripts"
-    ]);
+    expect(cache.get("templates")).toMatchObject({
+      main: {
+        name: "main",
+        extension: "html",
+        path: "",
+        modifiedAt: new Date("2019-10-20T11:36:46.952Z"),
+        raw: Buffer.from(
+          "3c6469763e0a20207b7b636f6e74656e747d7d0a3c2f6469763e",
+          "hex"
+        )
+      }
+    });
+
+    expect(cache.get("snippets")).toMatchObject({
+      analytics: {
+        configMode: "prod",
+        value: '<script>\n  const a = "I am an analytic script!";\n</script>'
+      },
+      scripts: {
+        configMode: "all",
+        value: '<script>\n  const a = "I am an script!";\n</script>'
+      }
+    });
+
     expect(
       cache
         .get("posts")

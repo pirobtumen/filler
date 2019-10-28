@@ -24,6 +24,17 @@ export class Builder {
     this.builders = builders;
   }
 
+  public async buildTemplates() {
+    const templates = this.cache.get("templates");
+    const buildTemplates: { [key: string]: IFile } = {};
+
+    for (const key of Object.keys(templates)) {
+      buildTemplates[key] = await buildHtml(this.cache, templates[key]);
+    }
+
+    this.cache.set("templates", buildTemplates);
+  }
+
   public async buildFile(file: IFile) {
     const builder = this.builders[file.extension];
     if (builder) return builder(this.cache, file);
@@ -31,17 +42,14 @@ export class Builder {
   }
 
   public async build() {
+    await this.buildTemplates();
     const config = this.cache.get("config");
     const publicFolder = join(config.projectFolder, config.publicFolder);
     const posts = this.cache.get("posts").map(
-      (p: IFile): IFile => {
-        const postMetadata = getPostMetadata(config, p);
-        return {
-          ...p,
-          raw: fillPostMetadata(p.raw.toString(), postMetadata),
-          path: config.postsFolder
-        };
-      }
+      (p: IFile): IFile => ({
+        ...p,
+        path: config.postsFolder
+      })
     );
 
     const publicFiles = await Promise.all(

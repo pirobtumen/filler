@@ -6,15 +6,17 @@ import { getPostMetadata } from "../parser";
 export const archiveBuilder = (cache: ICache) => {
   const config = cache.get("config");
   const posts = cache.get("posts");
-  const { archivePost: archiveTemplate } = cache.get("templates");
+  const { archivePost } = cache.get("templates");
 
-  if (!archiveTemplate) {
+  if (!archivePost) {
     throw new Error("There is no template for archive.");
   }
+
+  const archivePostTemplate = archivePost.raw.toString();
 
   return posts
     .map((post: IFile) => getPostMetadata(config, post))
     .sort(postSorter)
-    .map((pm: IPostMetadata) => fillPostMetadata(archiveTemplate, pm))
+    .map((pm: IPostMetadata) => fillPostMetadata(archivePostTemplate, pm))
     .join("");
 };

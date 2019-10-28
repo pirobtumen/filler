@@ -1,6 +1,6 @@
 import { IBuilder, IFile, ICache } from "../../../interfaces";
-import { getFileMetadata } from "../parser";
-import { recentPostsBuilder, archiveBuilder } from "../blog";
+import { getFileMetadata, getPostMetadata } from "../parser";
+import { recentPostsBuilder, archiveBuilder, fillPostMetadata } from "../blog";
 
 export const buildHtml: IBuilder = async (cache: ICache, file: IFile) => {
   const config = cache.get("config");
@@ -16,7 +16,7 @@ export const buildHtml: IBuilder = async (cache: ICache, file: IFile) => {
       throw new Error(`Template ${metadata.template} not found.`);
     }
 
-    output = templates[metadata.template];
+    output = templates[metadata.template].raw.toString();
     output = output.replace("{{content}}", content);
   } else {
     output = content;
@@ -45,6 +45,11 @@ export const buildHtml: IBuilder = async (cache: ICache, file: IFile) => {
 
         output = output.replace(templateSnippets[i], snippetValue);
       });
+  }
+
+  if (file.path === config.postsFolder) {
+    const postMetadata = getPostMetadata(config, file);
+    output = fillPostMetadata(output, postMetadata);
   }
 
   newFile.raw = output;

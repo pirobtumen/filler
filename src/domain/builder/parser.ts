@@ -2,13 +2,13 @@ import { IFileMetadata, IFile, IConfig, IPostMetadata } from "../../interfaces";
 import { join } from "path";
 
 export function getFileMetadata(file: IFile) {
-  const fileRaw = file.raw.toString();
-  const startIndex = fileRaw.indexOf("<!--");
+  const fileRaw = file.raw.toString().trim();
+  const startsWithComment = fileRaw.startsWith("<!--");
   const endIndex = fileRaw.indexOf("-->");
   const metadata: IFileMetadata = {};
   let html: string = "";
 
-  if (startIndex > -1 && endIndex > -1 && endIndex > startIndex) {
+  if (startsWithComment && endIndex > -1) {
     const endPos = endIndex + 3;
     const metadataRaw = fileRaw.substr(0, endPos);
     const metadataRegex = /@(\w+) (.+\n)/gm;
@@ -20,10 +20,15 @@ export function getFileMetadata(file: IFile) {
     }
 
     html = fileRaw.substr(endPos);
-  } else {
+  } else if (
+    (!startsWithComment && endIndex > -1) ||
+    (startsWithComment && endIndex === -1)
+  ) {
     throw new Error(
-      `Parser: file ${file.path}/${file.name} metadata is not correct.`
+      `Parser: file ${file.path}/${file.name}.${file.extension} metadata is not correctly formatted.`
     );
+  } else {
+    html = fileRaw;
   }
 
   return { metadata, html };
@@ -31,8 +36,15 @@ export function getFileMetadata(file: IFile) {
 
 export const getPostMetadata = (config: IConfig, post: IFile) => {
   const { metadata } = getFileMetadata(post);
-  // TODO validation
-  const [day, month, year] = metadata.date!.split("-").map(d => parseInt(d));
+  let day: number, month: number, year: number;
+
+  if (metadata.date) {
+    [day, month, year] = metadata.date.split("-").map(d => parseInt(d));
+  } else {
+    throw new Error(
+      `Post without date property. Check file ${post.path}/${post.name}.${post.extension}`
+    );
+  }
 
   const postMedata: IPostMetadata = {
     title: metadata.title!,
