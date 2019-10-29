@@ -52,12 +52,16 @@ describe("Loader", () => {
     const loader = new Loader(cache);
     await loader.init();
 
+    // Workaround for CI/CD file modified at date
+    // TODO Test date inside dir-scanner and mock it here
+    cache.get("templates").main.modifiedAt = "some-date";
+
     expect(cache.get("templates")).toMatchObject({
       main: {
         name: "main",
         extension: "html",
         path: "",
-        modifiedAt: new Date("2019-10-20T11:36:46.952Z"),
+        modifiedAt: "some-date",
         raw: Buffer.from(
           "3c6469763e0a20207b7b636f6e74656e747d7d0a3c2f6469763e",
           "hex"
