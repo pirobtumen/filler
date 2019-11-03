@@ -1,8 +1,9 @@
 import marked from "marked";
 
-import { MemoryCache } from "../../src/lib/cache";
-import { IFile } from "../../src/interfaces";
+import { MemoryCache, ICache } from "../../src/lib/cache";
+import { IFile, IBuilderCache } from "../../src/interfaces";
 import { buildHtml, markdownBuilder } from "../../src/domain/builder";
+import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 jest.mock("../../src/domain/builder/filetype/html.builder.ts");
 jest.mock("marked", () => ({
@@ -14,12 +15,23 @@ jest.mock("marked", () => ({
 const mockedMarked = marked as jest.Mocked<typeof marked>;
 
 describe("Builder - Markdown", () => {
+  let cache: ICache<IBuilderCache>;
+
+  beforeEach(() => {
+    const initCache: IBuilderCache = {
+      config: defaultConfig,
+      templates: {},
+      posts: [],
+      snippets: {}
+    };
+    cache = new MemoryCache<IBuilderCache>(initCache);
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   test("parseMarkdown and htmlBuilder are called", async () => {
-    const cache = new MemoryCache();
     const fakeFile: IFile = {
       name: "article",
       extension: "html",
@@ -45,7 +57,7 @@ describe("Builder - Markdown", () => {
         callback(new Error("Markdown error"), null)
       )
     );
-    const cache = new MemoryCache();
+
     const fakeFile: IFile = {
       name: "article",
       extension: "html",

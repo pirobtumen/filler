@@ -1,18 +1,23 @@
 import { Loader } from "../../src/domain/loader";
-import { MemoryCache } from "../../src/lib/cache";
-import { ICache, IConfig, IFile } from "../../src/interfaces";
+import { MemoryCache, ICache } from "../../src/lib/cache";
+import { IConfig, IFile, IBuilderCache } from "../../src/interfaces";
 import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 describe("Loader", () => {
-  let cache: ICache;
+  let cache: ICache<IBuilderCache>;
 
   beforeEach(() => {
-    cache = new MemoryCache();
-    cache.set("config", {
-      ...defaultConfig,
-      projectFolder: "./test/data/project",
-      distFolder: "./test/dist"
-    } as IConfig);
+    const initCache: IBuilderCache = {
+      config: {
+        ...defaultConfig,
+        projectFolder: "./test/data/project",
+        distFolder: "./test/dist"
+      },
+      templates: {},
+      posts: [],
+      snippets: {}
+    };
+    cache = new MemoryCache<IBuilderCache>(initCache);
   });
 
   test("Folder doesn't exist", async () => {
@@ -54,14 +59,15 @@ describe("Loader", () => {
 
     // Workaround for CI/CD file modified at date
     // TODO Test date inside dir-scanner and mock it here
-    cache.get("templates").main.modifiedAt = "some-date";
+    const now = new Date();
+    cache.get("templates").main.modifiedAt = now;
 
     expect(cache.get("templates")).toMatchObject({
       main: {
         name: "main",
         extension: "html",
         path: "",
-        modifiedAt: "some-date",
+        modifiedAt: now,
         raw: Buffer.from(
           "3c6469763e0a20207b7b636f6e74656e747d7d0a3c2f6469763e",
           "hex"

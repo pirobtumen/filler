@@ -1,25 +1,33 @@
-import { MemoryCache } from "../../src/lib/cache";
+import { MemoryCache, ICache } from "../../src/lib/cache";
 import { Storer } from "../../src/domain/storer";
 import { writeFileSync } from "fs";
-import { IFile } from "../../src/interfaces";
+import { IFile, IBuilderCache } from "../../src/interfaces";
 import { mkdir } from "../../src/lib/io";
 import { DirScanner } from "../../src/lib/dir-scanner";
+import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 jest.mock("fs");
 jest.mock("../../src/lib/io");
 DirScanner.scanAndGetFiles = jest.fn(async () => []);
 
 describe("Storer", () => {
+  let cache: ICache<IBuilderCache>;
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test("Save single file", async () => {
-    const cache = new MemoryCache();
-    cache.set("config", {
-      distFolder: "dist"
-    });
+  beforeEach(() => {
+    const initCache: IBuilderCache = {
+      config: defaultConfig,
+      templates: {},
+      posts: [],
+      snippets: {}
+    };
+    cache = new MemoryCache<IBuilderCache>(initCache);
+  });
 
+  test("Save single file", async () => {
     const fakeFile: IFile = {
       name: "test",
       extension: "html",
@@ -38,11 +46,6 @@ describe("Storer", () => {
   });
 
   test("Save multiple files", async () => {
-    const cache = new MemoryCache();
-    cache.set("config", {
-      distFolder: "dist"
-    });
-
     const fakeFile: IFile = {
       name: "test",
       extension: "html",

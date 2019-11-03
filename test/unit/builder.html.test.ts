@@ -1,20 +1,23 @@
-import { MemoryCache } from "../../src/lib/cache";
-import { IFile, ICache } from "../../src/interfaces";
+import { MemoryCache, ICache } from "../../src/lib/cache";
+import { IFile, IBuilderCache } from "../../src/interfaces";
 import { buildHtml } from "../../src/domain/builder";
 import { DirScanner } from "../../src/lib/dir-scanner";
+import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 describe("Builder - HTML", () => {
-  const defaultConfig = {
-    postsFolder: "posts"
-  };
-  let cache: ICache;
+  let cache: ICache<IBuilderCache>;
 
   beforeEach(() => {
-    cache = new MemoryCache();
+    const initCache: IBuilderCache = {
+      config: defaultConfig,
+      templates: {},
+      posts: [],
+      snippets: {}
+    };
+    cache = new MemoryCache<IBuilderCache>(initCache);
   });
 
   test("Builds file without template", async () => {
-    cache.set("config", defaultConfig);
     const fakeFile: IFile = {
       name: "article",
       extension: "html",
@@ -33,8 +36,6 @@ describe("Builder - HTML", () => {
   });
 
   test("Template not found", async () => {
-    cache.set("config", defaultConfig);
-    cache.set("templates", {});
     const fakeFile: IFile = {
       name: "article",
       extension: "html",
@@ -49,7 +50,6 @@ describe("Builder - HTML", () => {
   });
 
   test("Replace content correctly", async () => {
-    cache.set("config", defaultConfig);
     cache.set("templates", {
       main: {
         name: "main",
@@ -131,7 +131,10 @@ describe("Builder - HTML", () => {
         raw: "<div>{{content}}</div>"
       }
     });
-    cache.set("posts", DirScanner.scanAndGetFiles("./test/data/project/posts"));
+    cache.set(
+      "posts",
+      await DirScanner.scanAndGetFiles("./test/data/project/posts")
+    );
 
     const fakeFile: IFile = {
       name: "article",
@@ -246,7 +249,10 @@ describe("Builder - HTML", () => {
         raw: "<div>{{content}}</div>"
       }
     });
-    cache.set("posts", DirScanner.scanAndGetFiles("./test/data/project/posts"));
+    cache.set(
+      "posts",
+      await DirScanner.scanAndGetFiles("./test/data/project/posts")
+    );
 
     const fakeFile: IFile = {
       name: "article",

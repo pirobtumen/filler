@@ -1,14 +1,21 @@
 import { Builder, IBuilders, buildHtml } from "../../src/domain/builder";
-import { MemoryCache } from "../../src/lib/cache";
-import { IFile, ICache } from "../../src/interfaces";
+import { MemoryCache, ICache } from "../../src/lib/cache";
+import { IFile, IBuilderCache } from "../../src/interfaces";
+import { defaultConfig } from "../../src/use-cases/build/config.default";
 
 jest.mock("../../src/domain/builder/filetype/html.builder");
 
 describe("Builder", () => {
-  let cache: ICache;
+  let cache: ICache<IBuilderCache>;
 
   beforeEach(() => {
-    cache = new MemoryCache();
+    const initCache: IBuilderCache = {
+      config: defaultConfig,
+      templates: {},
+      posts: [],
+      snippets: {}
+    };
+    cache = new MemoryCache<IBuilderCache>(initCache);
   });
 
   test("Build file calls registered builder", async () => {
@@ -56,7 +63,7 @@ describe("Builder", () => {
   });
 
   test("Build templates", async () => {
-    cache.set("config", { postsFolder: "posts" });
+    cache.set("config", { ...defaultConfig, postsFolder: "posts" });
     cache.set("templates", {
       main: {
         name: "main",

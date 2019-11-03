@@ -1,18 +1,14 @@
 import { join } from "path";
 
-import { ICache, IFile } from "../../interfaces";
+import { IFile, IBuilderCache, ISnippet } from "../../interfaces";
 import { DirScanner } from "../../lib/dir-scanner";
 import { readFile } from "../../lib/io";
-
-interface IVar {
-  configMode: "prod" | "dev" | "all";
-  value: string;
-}
+import { ICache } from "../../lib/cache";
 
 export class Loader {
-  private cache: ICache;
+  private cache: ICache<IBuilderCache>;
 
-  constructor(cache: ICache) {
+  constructor(cache: ICache<IBuilderCache>) {
     this.cache = cache;
   }
 
@@ -48,7 +44,7 @@ export class Loader {
   private async loadSnippets() {
     const config = this.cache.get("config");
     const snippets: {
-      [key: string]: IVar;
+      [key: string]: ISnippet;
     } = {};
     const snippetsFolder = join(config.projectFolder, config.snippetsFolder);
     try {

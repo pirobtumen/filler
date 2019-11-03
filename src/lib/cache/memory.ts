@@ -1,13 +1,18 @@
-import { ICache } from "../../interfaces";
+import { ICache } from ".";
 
-export class MemoryCache implements ICache {
-  private data: { [key: string]: any } = {};
+export class MemoryCache<T extends { [key: string]: any }>
+  implements ICache<T> {
+  private data: T;
 
-  public set(key: string, value: any) {
+  constructor(data: T) {
+    this.data = data;
+  }
+
+  public set<K extends keyof T>(key: K, value: T[K]) {
     this.data[key] = value;
   }
 
-  public get(key: string) {
+  public get<K extends keyof T>(key: K): T[K] {
     return this.data[key];
   }
 }
