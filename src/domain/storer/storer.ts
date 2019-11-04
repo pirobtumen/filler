@@ -1,14 +1,15 @@
 import { join } from "path";
-
-import { ICache, IFile } from "../../interfaces";
-import { DirScanner } from "../../lib/dir-scanner";
-import { mkdir, unlink } from "../../lib/io";
 import { writeFileSync } from "fs";
 
-export class Storer {
-  private cache: ICache;
+import { IFile, IBuilderCache } from "../../interfaces";
+import { DirScanner } from "../../lib/dir-scanner";
+import { mkdir, unlink } from "../../lib/io";
+import { ICache } from "../../lib/cache";
 
-  constructor(cache: ICache) {
+export class Storer {
+  private cache: ICache<IBuilderCache>;
+
+  constructor(cache: ICache<IBuilderCache>) {
     this.cache = cache;
   }
 

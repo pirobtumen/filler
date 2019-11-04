@@ -1,9 +1,9 @@
-import { IBuilder, IFile, ICache } from "../../interfaces";
-import { buildCss, buildHtml, markdownBuilder } from "./filetype";
 import { join } from "path";
+
+import { IBuilder, IFile, IBuilderCache } from "../../interfaces";
+import { buildCss, buildHtml, markdownBuilder } from "./filetype";
 import { DirScanner } from "../../lib/dir-scanner";
-import { getPostMetadata } from "./parser";
-import { fillPostMetadata } from "./blog";
+import { ICache } from "../../lib/cache";
 
 export interface IBuilders {
   [key: string]: IBuilder;
@@ -16,10 +16,10 @@ export const defaultBuilders = {
 };
 
 export class Builder {
-  private cache: ICache;
+  private cache: ICache<IBuilderCache>;
   private builders: IBuilders;
 
-  constructor(cache: ICache, builders: IBuilders) {
+  constructor(cache: ICache<IBuilderCache>, builders: IBuilders) {
     this.cache = cache;
     this.builders = builders;
   }

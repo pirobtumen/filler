@@ -1,8 +1,12 @@
-import { IBuilder, IFile, ICache } from "../../../interfaces";
+import { IBuilder, IFile, IBuilderCache } from "../../../interfaces";
 import { getFileMetadata, getPostMetadata } from "../parser";
 import { recentPostsBuilder, archiveBuilder, fillPostMetadata } from "../blog";
+import { ICache } from "../../../lib/cache";
 
-export const buildHtml: IBuilder = async (cache: ICache, file: IFile) => {
+export const buildHtml: IBuilder = async (
+  cache: ICache<IBuilderCache>,
+  file: IFile
+) => {
   const config = cache.get("config");
   const templates = cache.get("templates");
   const snippets = cache.get("snippets");
