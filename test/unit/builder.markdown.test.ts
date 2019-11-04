@@ -1,11 +1,11 @@
 import marked from "marked";
-import { htmlBuilder } from "../../src/domain/builder/builders/html.builder";
 
-import { MemoryCache } from "../../src/lib/cache";
-import { IFile } from "../../src/interfaces";
-import { markdownBuilder } from "../../src/domain/builder/builders/markdown.builder";
+import { MemoryCache, ICache } from "../../src/lib/cache";
+import { IFile, IBuilderCache } from "../../src/interfaces";
+import { buildHtml, markdownBuilder } from "../../src/domain/builder";
+import { defaultConfig } from "../../src/use-cases/build/config.default";
 
-jest.mock("../../src/domain/builder/builders/html.builder.ts");
+jest.mock("../../src/domain/builder/filetype/html.builder.ts");
 jest.mock("marked", () => ({
   parse: jest.fn((markdown: string, callback: any) =>
     callback(null, "html-output")
@@ -15,10 +15,25 @@ jest.mock("marked", () => ({
 const mockedMarked = marked as jest.Mocked<typeof marked>;
 
 describe("Builder - Markdown", () => {
+  let cache: ICache<IBuilderCache>;
+
+  beforeEach(() => {
+    const initCache: IBuilderCache = {
+      config: defaultConfig,
+      templates: {},
+      posts: [],
+      snippets: {}
+    };
+    cache = new MemoryCache<IBuilderCache>(initCache);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("parseMarkdown and htmlBuilder are called", async () => {
-    const cache = new MemoryCache();
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
@@ -30,7 +45,7 @@ describe("Builder - Markdown", () => {
       fakeFile.raw,
       expect.any(Function)
     );
-    expect(htmlBuilder).toHaveBeenCalledWith(cache, {
+    expect(buildHtml).toHaveBeenCalledWith(cache, {
       ...fakeFile,
       raw: "html-output"
     });
@@ -42,9 +57,9 @@ describe("Builder - Markdown", () => {
         callback(new Error("Markdown error"), null)
       )
     );
-    const cache = new MemoryCache();
+
     const fakeFile: IFile = {
-      name: "article.html",
+      name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",

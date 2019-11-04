@@ -1,18 +1,14 @@
 import { join } from "path";
 
-import { ICache } from "../../interfaces";
+import { IFile, IBuilderCache, ISnippet } from "../../interfaces";
 import { DirScanner } from "../../lib/dir-scanner";
 import { readFile } from "../../lib/io";
-
-interface IVar {
-  configMode: "prod" | "dev" | "all";
-  value: string;
-}
+import { ICache } from "../../lib/cache";
 
 export class Loader {
-  private cache: ICache;
+  private cache: ICache<IBuilderCache>;
 
-  constructor(cache: ICache) {
+  constructor(cache: ICache<IBuilderCache>) {
     this.cache = cache;
   }
 
@@ -30,14 +26,13 @@ export class Loader {
 
   private async loadTemplates() {
     const config = this.cache.get("config");
-    const templates: { [key: string]: string } = {};
+    const templates: { [key: string]: IFile } = {};
     const templateFolder = join(config.projectFolder, config.templateFolder);
     try {
       const files = await DirScanner.scanAndGetFiles(templateFolder);
 
       for (const file of files) {
-        const name = file.name.split(".")[0];
-        templates[name] = file.raw.toString();
+        templates[file.name] = file;
       }
 
       return templates;
@@ -49,7 +44,7 @@ export class Loader {
   private async loadSnippets() {
     const config = this.cache.get("config");
     const snippets: {
-      [key: string]: IVar;
+      [key: string]: ISnippet;
     } = {};
     const snippetsFolder = join(config.projectFolder, config.snippetsFolder);
     try {

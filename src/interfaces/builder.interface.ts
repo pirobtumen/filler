@@ -1,7 +1,9 @@
-import { IFile, ICache } from ".";
+import { IFile } from ".";
+import { ICache } from "../lib/cache";
+import { IConfig } from "./config.interface";
 
 export interface IBuilder {
-  (cache: ICache, file: IFile): Promise<IFile>;
+  (cache: ICache<IBuilderCache>, file: IFile): Promise<IFile>;
 }
 
 export interface IFileMetadata {
@@ -21,4 +23,17 @@ export interface IPostMetadata {
   author: string;
   date: string;
   createdAt: Date;
+  href: string;
+}
+
+export interface ISnippet {
+  configMode: "prod" | "dev" | "all";
+  value: string;
+}
+
+export interface IBuilderCache {
+  config: IConfig;
+  templates: { [key: string]: IFile };
+  posts: IFile[];
+  snippets: { [key: string]: ISnippet };
 }

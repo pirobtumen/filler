@@ -1,18 +1,19 @@
 import { join } from "path";
-
-import { ICache, IFile } from "../../interfaces";
-import { DirScanner } from "../../lib/dir-scanner";
-import { mkdir, unlink } from "../../lib/io";
 import { writeFileSync } from "fs";
 
-export class Storer {
-  private cache: ICache;
+import { IFile, IBuilderCache } from "../../interfaces";
+import { DirScanner } from "../../lib/dir-scanner";
+import { mkdir, unlink } from "../../lib/io";
+import { ICache } from "../../lib/cache";
 
-  constructor(cache: ICache) {
+export class Storer {
+  private cache: ICache<IBuilderCache>;
+
+  constructor(cache: ICache<IBuilderCache>) {
     this.cache = cache;
   }
 
-  private async saveFile(file: IFile) {
+  public async saveFile(file: IFile) {
     const config = this.cache.get("config");
     const outFolder = join(config.distFolder, file.path);
 
@@ -28,7 +29,7 @@ export class Storer {
       console.log(`WARNING: Empty file ${file.path} `);
     }
 
-    const outFilePath = join(outFolder, file.name);
+    const outFilePath = `${join(outFolder, file.name)}.${file.extension}`;
     console.log(`+ ${outFilePath}`);
     writeFileSync(outFilePath, content);
   }

@@ -10,8 +10,11 @@ Static web sites made easy.
 - [Filler](#filler)
   - [Objective](#objective)
   - [Features and Roadmap](#features-and-roadmap)
-- [Installation](#installation)
+  - [Examples](#examples)
+- [Usage](#usage)
+  - [Installation](#installation)
   - [Commands](#commands)
+- [Documentation](#documentation)
   - [Folder structure](#folder-structure)
   - [Template system](#template-system)
   - [Snippet system](#snippet-system)
@@ -34,6 +37,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [x] Markdown support.
 - [ ] Improve logging system.
 - [ ] Improve error system.
+- [ ] Docs and GitHub pages.
 - [ ] Serve project: build in memory and watch for file changes.
 - [ ] Support saving into cloud storage (AWS S3, Google Cloud Storage...).
 - [ ] Example templates.
@@ -45,13 +49,19 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
 
-# Installation
+## Examples
 
-Install node [[Download link](https://nodejs.org/en/download/)][tested version 12.12]
+- [www.pirobits.com](https://www.pirobits.com) - [Source: GitHub](https://github.com/pirobtumen/pirobits.com)
+
+# Usage
+
+## Installation
+
+Install node 12.13 LTS [[Download link](https://nodejs.org/en/download/)]. You can also use nvm or any other node version manager.
 
 Install filler:
 
-```
+```shell
 git clone https://github.com/pirobtumen/filler.git
 cd filler
 npm ci
@@ -68,6 +78,8 @@ node filler --help
   - --force: force build all files. Default: false
   - --mode [dev, prod]: build mode. Replace specific snippets. Default: dev
   - --recentPosts [number]: number of recent posts rendered. Default: 5
+
+# Documentation
 
 ## Folder structure
 
@@ -117,16 +129,16 @@ The output folder will contain:
 
 The files inside the public folder can use any template created inside the `/templates` folder. The idea is to set the property `@template <template filename>` inside a comment in the top part of the file. Let's see an example:
 
-```
+```html
 File: ./public/index.html
 <!--
   @template main
 -->
 
-I'm the main web page!!
+<h1>I'm the main web page!!</h1>
 ```
 
-```
+```html
 File: ./templates/main.html
 <div>
 {{content}}
@@ -140,6 +152,26 @@ Result: ./dist/index.html
 <div>
 I'm the main web page!!
 </div>
+```
+
+It also supports Markdown files:
+
+```markdown
+File: ./posts/my-first-post.md
+<!--
+  @template post
+  @author Some name
+  @title First post
+  @date 01-01-2019
+  @description First blog test
+-->
+
+# I'm the first post!!
+
+With a list:
+- A
+- B
+- C
 ```
 
 ## Snippet system
@@ -204,6 +236,25 @@ I'm the main web page!!
 ```
 
 You can control the number of recent post displayed with the `build --recentPosts <number>` argument.
+
+Inside the recent posts or archive templates, the post properties can be injected and will replace the template markups:
+
+- {{title}}: Post title (@title)
+- {{description}}: Post description (@description)
+- {{author}}: Post author (@author)
+- {{date}}: Post date (@date)
+- {{href}}: Post link href
+
+Some examples:
+
+```
+File: ./template/recentPost.html
+<div>
+  <h1>{{title}} - {{date}}</h1>
+  <p>{{description}}</p>
+  <a href="{{href}}">Read more</a>
+</div>
+```
 
 # Contribute
 

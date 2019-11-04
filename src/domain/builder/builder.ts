@@ -1,25 +1,38 @@
-import { IBuilder, IFile, ICache } from "../../interfaces";
-import { cssBuilder, htmlBuilder, markdownBuilder } from "./builders";
 import { join } from "path";
+
+import { IBuilder, IFile, IBuilderCache } from "../../interfaces";
+import { buildCss, buildHtml, markdownBuilder } from "./filetype";
 import { DirScanner } from "../../lib/dir-scanner";
+import { ICache } from "../../lib/cache";
 
 export interface IBuilders {
   [key: string]: IBuilder;
 }
 
 export const defaultBuilders = {
-  html: htmlBuilder,
-  css: cssBuilder,
+  html: buildHtml,
+  css: buildCss,
   md: markdownBuilder
 };
 
 export class Builder {
-  private cache: ICache;
+  private cache: ICache<IBuilderCache>;
   private builders: IBuilders;
 
-  constructor(cache: ICache, builders: IBuilders) {
+  constructor(cache: ICache<IBuilderCache>, builders: IBuilders) {
     this.cache = cache;
     this.builders = builders;
+  }
+
+  public async buildTemplates() {
+    const templates = this.cache.get("templates");
+    const buildTemplates: { [key: string]: IFile } = {};
+
+    for (const key of Object.keys(templates)) {
+      buildTemplates[key] = await buildHtml(this.cache, templates[key]);
+    }
+
+    this.cache.set("templates", buildTemplates);
   }
 
   public async buildFile(file: IFile) {
@@ -29,12 +42,15 @@ export class Builder {
   }
 
   public async build() {
+    await this.buildTemplates();
     const config = this.cache.get("config");
     const publicFolder = join(config.projectFolder, config.publicFolder);
-    const posts = this.cache.get("posts").map((p: IFile) => ({
-      ...p,
-      path: config.postsFolder
-    }));
+    const posts = this.cache.get("posts").map(
+      (p: IFile): IFile => ({
+        ...p,
+        path: config.postsFolder
+      })
+    );
 
     const publicFiles = await Promise.all(
       [...(await DirScanner.scanAndGetFiles(publicFolder)), ...posts].map(pf =>
