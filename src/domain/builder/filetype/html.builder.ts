@@ -51,7 +51,7 @@ export const buildHtml: IBuilder = async (
       });
   }
 
-  if (file.path === config.postsFolder) {
+  if (file.path.startsWith(config.postsFolder)) {
     const postMetadata = getPostMetadata(config, file);
     output = fillPostMetadata(output, postMetadata);
   }
