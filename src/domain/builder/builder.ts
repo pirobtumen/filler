@@ -48,7 +48,7 @@ export class Builder {
     const posts = this.cache.get("posts").map(
       (p: IFile): IFile => ({
         ...p,
-        path: config.postsFolder
+        path: `${config.postsFolder}/${p.path}`
       })
     );
 

@@ -61,7 +61,11 @@ export class Storer {
     }
 
     for (const f of distFiles) {
-      const filePath = join(config.distFolder, f.path, f.name);
+      const filePath = join(
+        config.distFolder,
+        f.path,
+        `${f.name}.${f.extension}`
+      );
       await unlink(filePath);
       console.log(`- ${filePath}`);
       filesUpdated += 1;
