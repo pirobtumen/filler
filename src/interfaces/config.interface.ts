@@ -6,6 +6,7 @@ export interface IConfig {
   snippetsFolder: string;
   projectFolder: string;
   postsFolder: string;
+  inputPostsFolder: string;
   mode: string;
   recentPosts: number;
 }

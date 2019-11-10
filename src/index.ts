@@ -40,6 +40,11 @@ buildCmd.addArgument(["--output", "-o"], {
   help: "Output folder",
   type: "string"
 });
+buildCmd.addArgument(["--postsFolder"], {
+  action: "store",
+  help: "Posts folder",
+  type: "string"
+});
 
 const args = parser.parseArgs();
 switch (args.command) {
@@ -59,6 +64,10 @@ switch (args.command) {
 
     if (args.recentPosts) {
       config.recentPosts = args.recentPosts;
+    }
+
+    if (args.postsFolder) {
+      config.postsFolder = args.postsFolder;
     }
 
     build(config);

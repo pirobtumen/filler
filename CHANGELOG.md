@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - Unreleased
 
+## Added
+- Build command supports postsFolder (output) argument.
+- Input/Output post folder configuration.
+
 ## Fixed
 - Remove file extension is missing
 - Posts subfolder paths were removed during the build process.
+- Comments inside file crashed the execution.
+- Recent/archive post href uses absolute paths now.
 
 ## [0.3.0] - 4-11-2019
 

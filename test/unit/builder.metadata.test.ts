@@ -65,54 +65,16 @@ describe("Builder - Metadata", () => {
     expect(html).toEqual("my-content");
   });
 
-  test("Parse template file (error not started)", () => {
+  test("Parse template file without metadata and comments", () => {
     const file: IFile = {
       name: "article",
       extension: "html",
       modifiedAt: new Date(),
       path: "",
-      raw:
-        "\n\
-      @template main\n\
-      @a 1234\n\
-      @b abcdef\n\
-      @c 12-12-2019\n\
-      -->"
+      raw: "<div><!-- hello -->my-content</div>"
     };
-    expect(() => getFileMetadata(file)).toThrow();
-  });
-
-  test("Parse template file (error not ended)", () => {
-    const file: IFile = {
-      name: "article",
-      extension: "html",
-      modifiedAt: new Date(),
-      path: "",
-      raw:
-        "    <!--\n\
-      @template main\n\
-      @a 1234\n\
-      @b abcdef\n\
-      @c 12-12-2019\n\
-      "
-    };
-    expect(() => getFileMetadata(file)).toThrow();
-  });
-
-  test("Parse template file (error reversed)", () => {
-    const file: IFile = {
-      name: "article",
-      extension: "html",
-      modifiedAt: new Date(),
-      path: "",
-      raw:
-        "  -->  <!--\n\
-      @template main\n\
-      @a 1234\n\
-      @b abcdef\n\
-      @c 12-12-2019\n\
-      "
-    };
-    expect(() => getFileMetadata(file)).toThrowError();
+    const { metadata, html } = getFileMetadata(file);
+    expect(metadata).toMatchObject({});
+    expect(html).toEqual("<div><!-- hello -->my-content</div>");
   });
 });

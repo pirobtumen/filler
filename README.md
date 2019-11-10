@@ -43,9 +43,7 @@ Filler is a tool to create a static website using templates, reusing code and sa
 - [ ] Example templates.
 - [ ] "init" command.
 - [ ] Multilingual sites.
-- [ ] Webpack support.
-- [ ] React support.
-- [ ] Server Side Rendering.
+- [ ] JS Components (React, Vanilla, Preact...?)
 - [ ] SEO features.
 - [ ] Any proposal? Contribute!
 
@@ -78,6 +76,7 @@ node filler --help
   - --force: force build all files. Default: false
   - --mode [dev, prod]: build mode. Replace specific snippets. Default: dev
   - --recentPosts [number]: number of recent posts rendered. Default: 5
+  - --postsFodler [string]:  output posts folder. Default: blog.
 
 # Documentation
 
@@ -87,12 +86,12 @@ Create the following file structure:
 
 ```
 - ~/Projects/myweb
-  - /posts -> files can be named freely
+  - /posts
     - post1.html
   - /snippets -> supports only two by now: scripts, analytics
     - scripts.html -> replaced in all modes
     - analytics.html -> replaced only in prod mode
-  - /templates -> files can be named freely
+  - /templates
     - main.html
   - /public -> files and structure can be created freely
     - index.html
@@ -207,12 +206,16 @@ I'm the main web page!!
 
 ## Blog system
 
-The files inside the `/post` folder can use any template created inside the `/templates` folder. The idea is to set the parameter `@template <template filename>` inside a comment in the top part of the file. It will also have some extra properties: `@title`, `@description`, `@author` and `@date (dd-mm-yyyyy)`. These properties are used to build the `{{blog:recent-post}}` and `{{blog:archive}}`.
+The files inside the `/post` folder can use any template created inside the `/templates` folder. The idea is to set the parameter `@template post` inside a comment in the top part of the file. It will also have some extra properties: `@title`, `@description`, `@author` and `@date (dd-mm-yyyyy)`. These properties are used to build the `post` template itself, the `{{blog:recent-post}}` and `{{blog:archive}}`.
+
+**Note: posts must have the *post* template.**
+
+For exammple:
 
 ```
 File: ./post/my-first-post.html
 <!--
-  @template main
+  @template post
   @author Some name
   @title First post
   @date 01-01-2019
@@ -222,12 +225,30 @@ File: ./post/my-first-post.html
 My firs blog post content
 ```
 
+```
+File: ./templates/post.html
+<!--
+  @template main
+-->
+
+<div class="post">
+  <h1>{{title}}</h1>
+  <div>
+    <span class="description">{{description}}</span>
+  </div>
+  <span class="date">{{author}}, {{date}}</span>
+  <div>
+    {{content}}
+  </div>
+</div>
+```
+
 If you want to use `{{blog:recent-posts}}` or `{{blog:archive}}`, you need to create the `/template/recentPost.html` or `template/archivePost.html` template in order to render them. For example:
 
 Then you can insert the markups `{{blog:recent-posts}}` or `{{blog:archive}}` where you want, for example in the main page:
 
 ```
-Result: ./dist/index.html
+File: ./public/index.html
 <div>
 I'm the main web page!!
 <h1>Recent posts</h1>
@@ -249,10 +270,14 @@ Some examples:
 
 ```
 File: ./template/recentPost.html
-<div>
-  <h1>{{title}} - {{date}}</h1>
-  <p>{{description}}</p>
-  <a href="{{href}}">Read more</a>
+<div class="post">
+  <div>
+    <span class="title">{{title}}</span>
+    <span class="date">{{date}}</span>
+  </div>
+
+  <span class="description">{{description}}</span>
+  <a href="{{href}}">Continue reading</a>
 </div>
 ```
 

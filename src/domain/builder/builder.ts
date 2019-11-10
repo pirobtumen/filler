@@ -4,6 +4,7 @@ import { IBuilder, IFile, IBuilderCache } from "../../interfaces";
 import { buildCss, buildHtml, markdownBuilder } from "./filetype";
 import { DirScanner } from "../../lib/dir-scanner";
 import { ICache } from "../../lib/cache";
+import { getFileMetadata } from "./parser";
 
 export interface IBuilders {
   [key: string]: IBuilder;

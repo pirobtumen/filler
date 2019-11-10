@@ -2,7 +2,8 @@ import { IConfig } from "../../interfaces";
 
 export const defaultConfig: IConfig = {
   templateFolder: "templates",
-  postsFolder: "posts",
+  postsFolder: "blog",
+  inputPostsFolder: "posts",
   publicFolder: "public",
   distFolder: "dist",
   snippetsFolder: "snippets",
