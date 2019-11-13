@@ -150,7 +150,7 @@ describe("Builder - HTML", () => {
   });
 
   test("Recent posts", async () => {
-    cache.set("config", { ...defaultConfig, recentPosts: 2 });
+    cache.set("config", { ...defaultConfig, recentPosts: 3 });
     cache.set("templates", {
       main: {
         name: "main",
@@ -182,10 +182,10 @@ describe("Builder - HTML", () => {
         '<!--\n @template main \n--> <div class="recent-posts">{{blog:recent-posts}}</div>'
     };
 
-    // TODO Check post in subfolder href
     const posts = [
-      '<div href="posts/fourth.html"><p>Fourth post</p><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p></div>',
-      '<div href="posts/third.html"><p>Third post</p><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div>'
+      '<div href="/blog/fourth.html"><p>Fourth post</p><p>Test</p><p>Fourth blog test</p><p>04-01-2019</p></div>',
+      '<div href="/blog/third.html"><p>Third post</p><p>Test</p><p>Third blog test</p><p>03-01-2019</p></div>',
+      '<div href="/blog/2019/subfolder.html"><p>Subfolder post</p><p>Test</p><p>Subfolder blog test</p><p>03-01-2019</p></div>'
     ];
 
     const result: IFile = {
@@ -282,7 +282,7 @@ describe("Builder - HTML", () => {
         extension: "html",
         path: "",
         modifiedAt: new Date(),
-        raw: "<div>{{title}}</div><p>{{date}}</p>"
+        raw: '<a href="{{href}}"><div>{{title}}</div><p>{{date}}</p></a>'
       }
     });
     cache.set(
@@ -298,10 +298,17 @@ describe("Builder - HTML", () => {
       raw: "<!--\n @template main \n--> <div>{{blog:archive}}</div>"
     };
 
+    const posts = [
+      '<a href="/blog/fourth.html"><div>Fourth post</div><p>04-01-2019</p></a>',
+      '<a href="/blog/third.html"><div>Third post</div><p>03-01-2019</p></a>',
+      '<a href="/blog/2019/subfolder.html"><div>Subfolder post</div><p>03-01-2019</p></a>',
+      '<a href="/blog/second.html"><div>Second post</div><p>02-01-2019</p></a>',
+      '<a href="/blog/first.html"><div>First post</div><p>01-01-2019</p></a>'
+    ];
+
     const result: IFile = {
       ...fakeFile,
-      raw:
-        "<div> <div><div>Fourth post</div><p>04-01-2019</p><div>Third post</div><p>03-01-2019</p><div>Second post</div><p>02-01-2019</p><div>First post</div><p>01-01-2019</p></div></div>"
+      raw: `<div> <div>${posts.join("")}</div></div>`
     };
 
     const output = await buildHtml(cache, fakeFile);

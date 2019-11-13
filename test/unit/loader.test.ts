@@ -91,7 +91,9 @@ describe("Loader", () => {
         .get("posts")
         .every(
           (p: IFile) =>
-            ["first", "second", "third", "fourth"].indexOf(p.name) > -1
+            ["first", "second", "third", "fourth", "subfolder"].indexOf(
+              p.name
+            ) > -1
         )
     ).toBeTruthy();
   });

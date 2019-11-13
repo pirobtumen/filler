@@ -4,6 +4,7 @@ import { IBuilder, IFile, IBuilderCache } from "../../interfaces";
 import { buildCss, buildHtml, markdownBuilder } from "./filetype";
 import { DirScanner } from "../../lib/dir-scanner";
 import { ICache } from "../../lib/cache";
+import { getFileMetadata } from "./parser";
 
 export interface IBuilders {
   [key: string]: IBuilder;
@@ -48,7 +49,7 @@ export class Builder {
     const posts = this.cache.get("posts").map(
       (p: IFile): IFile => ({
         ...p,
-        path: config.postsFolder
+        path: `${config.postsFolder}/${p.path}`
       })
     );
 

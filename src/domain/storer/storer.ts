@@ -5,12 +5,20 @@ import { IFile, IBuilderCache } from "../../interfaces";
 import { DirScanner } from "../../lib/dir-scanner";
 import { mkdir, unlink } from "../../lib/io";
 import { ICache } from "../../lib/cache";
+import { getHash } from "../../lib/hash";
 
 export class Storer {
   private cache: ICache<IBuilderCache>;
 
   constructor(cache: ICache<IBuilderCache>) {
     this.cache = cache;
+  }
+
+  private fileHasChanges(a: IFile, b: IFile) {
+    const aHash = getHash(a.raw.toString());
+    const bHash = getHash(b.raw.toString());
+
+    return aHash !== bHash;
   }
 
   public async saveFile(file: IFile) {
@@ -45,10 +53,9 @@ export class Storer {
       const distFileIndex = distFiles.findIndex(
         df => df.name === f.name && df.path === f.path
       );
-
       if (
         distFileIndex === -1 ||
-        f.modifiedAt > distFiles[distFileIndex].modifiedAt ||
+        this.fileHasChanges(f, distFiles[distFileIndex]) ||
         config.force
       ) {
         this.saveFile(f);
@@ -61,14 +68,18 @@ export class Storer {
     }
 
     for (const f of distFiles) {
-      const filePath = join(config.distFolder, f.path, f.name);
+      const filePath = join(
+        config.distFolder,
+        f.path,
+        `${f.name}.${f.extension}`
+      );
       await unlink(filePath);
       console.log(`- ${filePath}`);
       filesUpdated += 1;
     }
 
     if (filesUpdated === 0) {
-      console.log("WARNING: There are no changes.");
+      console.log("There are no changes.");
     }
   }
 }

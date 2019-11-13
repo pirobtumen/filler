@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - Unreleased
+
+## Added
+- Build command supports postsFolder (output) argument.
+- Input/Output post folder configuration.
+- Use hash to write files that have changes only.
+
+## Fixed
+- Remove file extension is missing
+- Posts subfolder paths were removed during the build process.
+- Comments inside file crashed the execution.
+- Recent/archive post href uses absolute paths now.
+
 ## [0.3.0] - 4-11-2019
 
 ## Added

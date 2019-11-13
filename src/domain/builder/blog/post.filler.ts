@@ -9,5 +9,5 @@ export const fillPostMetadata = (
     .replace("{{author}}", postMetadata.author)
     .replace("{{date}}", postMetadata.date)
     .replace("{{description}}", postMetadata.description)
-    .replace("{{href}}", postMetadata.href);
+    .replace("{{href}}", `/${postMetadata.href}`);
 };

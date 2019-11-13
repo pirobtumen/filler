@@ -65,7 +65,7 @@ export class Loader {
 
   private async loadPosts() {
     const config = this.cache.get("config");
-    const postsFolder = join(config.projectFolder, config.postsFolder);
+    const postsFolder = join(config.projectFolder, config.inputPostsFolder);
     try {
       return await DirScanner.scanAndGetFiles(postsFolder);
     } catch (error) {

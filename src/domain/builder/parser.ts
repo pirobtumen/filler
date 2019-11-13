@@ -20,13 +20,6 @@ export function getFileMetadata(file: IFile) {
     }
 
     html = fileRaw.substr(endPos);
-  } else if (
-    (!startsWithComment && endIndex > -1) ||
-    (startsWithComment && endIndex === -1)
-  ) {
-    throw new Error(
-      `Parser: file ${file.path}/${file.name}.${file.extension} metadata is not correctly formatted.`
-    );
   } else {
     html = fileRaw;
   }
