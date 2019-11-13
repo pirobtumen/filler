@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - Build command supports postsFolder (output) argument.
 - Input/Output post folder configuration.
+- Use hash to write files that have changes only.
 
 ## Fixed
 - Remove file extension is missing
