@@ -15,7 +15,7 @@
   "author": "Alberto Sola",
   "dependencies": {
     "argparse": "^1.0.10",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "uglifycss": "0.0.29"
   },
   "devDependencies": {
